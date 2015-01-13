@@ -1,0 +1,18 @@
+## Interface: 60000
+## Title: RotAgent
+## Notes: Rotation Agent for ProbablyEngine
+## Author: StinkyTwitch
+## Version: 0.0.1
+## Dependencies: Probably
+
+Libs\AutoTarget.lua
+Libs\Globals.lua
+Libs\LibHunter.lua
+
+#Config\Hunter\BeastMastery.lua
+#Config\Hunter\Marksmanship.lua
+#Config\Hunter\Survival.lua
+
+Rotations\Hunter\BeastMastery.lua
+Rotations\Hunter\Marksmanship.lua
+Rotations\Hunter\Survival.lua
