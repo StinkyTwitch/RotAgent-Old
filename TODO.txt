@@ -3,6 +3,7 @@ NOW
 
 -- REWRITE: target.area().enemies current PE doesn't work for me atm.
 -- TRANQ NOT WORKING
+-- ADD Blazing Tricksters to SpecialTargets
 
 ----------------------------------------------------------------------------------------------------
 -- Version 0.1 Hunter

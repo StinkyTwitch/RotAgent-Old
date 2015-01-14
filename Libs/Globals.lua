@@ -7,6 +7,8 @@
 DEBUGLOGLEVEL = 1
 DEBUGTOGGLE = true
 BASESTATVALUE = {}
+UNITSAROUNDUNITCOUNT = 0
+UNITSAROUNDUNITTIME = 0
 
 
 
@@ -119,7 +121,9 @@ SpecialTargets = {
 	87318,      -- Dungeoneer's Training Dummy <Damage>
 	-- WOD DUNGEONS/RAIDS
 	75966,      -- Defiled Spirit (Shadowmoon Burial Grounds)
+	76220,		-- Blazing Trickster (Auchindoun Normal)
 	76518,      -- Ritual of Bones (Shadowmoon Burial Grounds)
+	79511,		-- Blazing Trickster (Auchindoun Heroic)
 	81638,      -- Aqueous Globule (The Everbloom)
 }
 
@@ -457,6 +461,73 @@ function TrinketsOnCooldown()
 	else
 		return false
 	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+UNITS AROUND UNIT
+
+--------------------------------------------------------------------------------------------------]]
+function UnitsAroundUnit(unit, distance, check_value)
+    local unit = tostring(unit)
+    local distance = tonumber(distance)
+    local check_value = check_value
+    local update = 0.1
+
+    if UNITSAROUNDUNITTIME and ( (UNITSAROUNDUNITTIME + update) > GetTime() ) then
+        if UNITSAROUNDUNITCOUNT > check_value then
+        	DEBUG(1, "Total Units Around Unit("..unit.."): "..UNITSAROUNDUNITCOUNT.."")
+        	return true
+        else
+        	return false
+        end
+    end
+
+    if UnitExists(unit) then
+        local total = 0
+        local totalObjects = ObjectCount()
+
+        for i = 1, totalObjects do
+            local _, object = pcall(ObjectWithIndex, i)
+            local _, object_exists = pcall(ObjectExists, object)
+
+            if object_exists then
+                local _, oType = pcall(ObjectType, object)
+                local bitband = bit.band(oType, ObjectTypes.Unit)
+
+                if bitband > 0 then
+                	local _, dead = pcall(UnitIsDeadOrGhost, object)
+                	local _, reaction = pcall(UnitReaction, "player", object)
+                    local _, special_target = pcall(SpecialTargetCheck, object)
+                    local _, tapped_by_me = pcall(UnitIsTappedByMe, object)
+                    local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
+                    local _, x1, y1, z1 = pcall(ObjectPosition, unit)
+                    local _, x2, y2, z2 = pcall(ObjectPosition, object)
+                    local dx = x2 - x1
+                    local dy = y2 - y1
+                    local dz = z2 - z1
+                    local distance_between_unit_and_object = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+
+                    if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
+                        if distance_between_unit_and_object <= distance then
+                            total = total + 1
+                        end
+                    end
+                end
+            end
+        end
+
+        DEBUG(1, "Total Units Around Unit("..unit.."): "..total.."")
+        UNITSAROUNDUNITCOUNT = total
+        UNITSAROUNDUNITTIME = GetTime()
+
+        if total > check_value then
+        	return true
+        else
+        	return false
+        end
+    end
+
 end
 
 

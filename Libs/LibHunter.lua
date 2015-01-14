@@ -7,6 +7,8 @@ local BurstHasteBuffs = BurstHasteBuffs
 local ClassificationValues = ClassificationValues
 local ImmuneAuras = ImmuneAuras
 local SpecialTargets = SpecialTargets
+local UNITSAROUNDUNITCOUNT = UNITSAROUNDUNITCOUNT
+local UNITSAROUNDUNITTIME = UNITSAROUNDUNITTIME
 
 local LibHunter = {}
 LibHunter.BurstHasteCheck = BurstHasteCheck
@@ -18,6 +20,7 @@ LibHunter.SpecialAuraCheck = SpecialAuraCheck
 LibHunter.SpecialTargetCheck = SpecialTargetCheck
 LibHunter.StatProcs = StatProcs
 LibHunter.TrinketsOnCooldown = TrinketsOnCooldown
+LibHunter.UnitsAroundUnit = UnitsAroundUnit
 LibHunter.UnitToUnitDistanceCheck = UnitToUnitDistanceCheck
 LibHunter.UseOpenerCheck = UseOpenerCheck
 

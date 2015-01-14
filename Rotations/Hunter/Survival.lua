@@ -1,6 +1,6 @@
 -- ProbablyEngine Rotation Packager
 -- Created on Nov 1st 2014 8:14 pm
-ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
+ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 -- COMBAT
 {
     --[[--------------------------------------------------------------------------------------------
@@ -307,7 +307,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
                 --actions.aoe+=/cobra_shot
                 { "Cobra Shot", },
 
-            }, "modifier.multitarget", },
+            }, { "modifier.multitarget", "@LibHunter.UnitsAroundUnit('target', 10, 1)", }, },
 
             --actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|
             --         trinket.stat.any.up))|

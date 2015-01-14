@@ -73,25 +73,29 @@ function CacheUnits()
 
     for i=1, total_objects do
         local _, object = pcall(ObjectWithIndex, i)
+        local _, object_exists = pcall(ObjectExists, object)
 
-        if object then
+        if object_exists then
+            local _, obj_text = pcall(tostring, object)
             local _, oType = pcall(ObjectType, object)
             local bitband = bit.band(oType, ObjectTypes.Unit)
+
             local _, x1, y1, z1 = pcall(ObjectPosition, "player")
             local _, x2, y2, z2 = pcall(ObjectPosition, object)
             local dx = x2 - x1
             local dy = y2 - y1
             local dz = z2 - z1
             local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+
             local _, pcall_health = pcall(UnitHealth, object)
-            local _, pcall_max_health = pcall(UnitHealthMax, object)
-            local health = math.floor((pcall_health / pcall_max_health) * 100)
-            local _, obj_text = pcall(tostring, object)
-            local _, unit_is_enemy = pcall(UnitIsEnemy, player, object)
-            local _, unit_is_attackable = pcall(UnitCanAttack, player, object)
+            local _, pcall_health_max = pcall(UnitHealthMax, object)
+            local health = math.floor((pcall_health / pcall_health_max) * 100)
+
+            local _, reaction = pcall(UnitReaction, "player", object)
             local _, special_target = pcall(SpecialTargetCheck, object)
-            local _, tapped_by_me = pcall(UnitIsTappedByMe, object)
+            local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
             local _, tapped_by_all_threat_list = pcall(UnitIsTappedByAllThreatList, object)
+
 
             if bitband > 0 then
                 DEBUG(4, "("..i..") bit.band compare true: "..oType..","..ObjectTypes.Unit.." bit.band:  ("..bitband..")")
@@ -102,26 +106,21 @@ function CacheUnits()
                     if health > 0 then
                         DEBUG(4, "("..i..") Health: ("..health..") > 0 true")
 
-                        if unit_is_attackable or special_target then
-                            DEBUG(4, "("..i..") UnitCanAttack("..unit_is_attackable..")")
+                        if reaction and reaction <= 4 and (tapped_by_me or tapped_by_all or special_target) then
+                            DEBUG(1, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
 
-                            if tapped_by_me or tapped_by_all_threat_list or special_target then
-                                DEBUG(4, "("..i..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
-
-                                if CACHEUNITSALGORITHM == "nearest" then
-                                    CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = distance}
-                                    table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
-                                    DEBUG(3, ""..i..": Object Pointer: "..obj_text.." - Distance: "..distance.."")
-                                elseif CACHEUNITSALGORITHM == "lowest" then
-                                    CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = health}
-                                    table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
-                                    DEBUG(3, ""..i..": Object Pointer: "..obj_text.." - Health: "..health.."")
-                                end
-                            else
-                                DEBUG(5, "("..i..") UnitIsTappedByAllThreatList() or SpecialTargetCheck() false")
+                            if CACHEUNITSALGORITHM == "nearest" then
+                                CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = distance}
+                                table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
+                                DEBUG(3, ""..i..": Object Pointer: "..obj_text.." - Distance: "..distance.."")
+                            elseif CACHEUNITSALGORITHM == "lowest" then
+                                CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = health}
+                                table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
+                                DEBUG(3, ""..i..": Object Pointer: "..obj_text.." - Health: "..health.."")
                             end
+
                         else
-                            DEBUG(5, "("..i..") UnitIsEnemy(): false")
+                            DEBUG(5, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
                         end
                     else
                         DEBUG(5, "("..i..") health: ("..health..") > 0 false")
