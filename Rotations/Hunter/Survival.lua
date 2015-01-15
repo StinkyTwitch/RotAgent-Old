@@ -41,8 +41,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 
 	--[[--------------------------------------------------------------------------------------------
 	MAINTENANCE
-	  * Prevent wasting time/cast on an Aimed Shot that can not complete because we lost Thrill of
-		the Hunt mid cast and we don't have enough focus now.
+
 	----------------------------------------------------------------------------------------------]]
 
 
@@ -56,10 +55,8 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 
 
 	--[[--------------------------------------------------------------------------------------------
-	AUTOTARGET
-	  * Will automatically target nearest enemy. If you accidentally select a friendly target it
-		clears your selection and reselects the nearest enemy. To override this press and hold Right
-		Control.
+	AUTO CLEAR TARGET
+	  * Automatically clears the target if it is friendly.
 	----------------------------------------------------------------------------------------------]]
 	{{
 		{ "/cleartarget", { "@LibHunter.ClearCurrentTarget()", "!modifier.rcontrol" }, },
