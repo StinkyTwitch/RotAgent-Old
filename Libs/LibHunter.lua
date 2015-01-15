@@ -7,8 +7,8 @@ local BurstHasteBuffs = BurstHasteBuffs
 local ClassificationValues = ClassificationValues
 local ImmuneAuras = ImmuneAuras
 local SpecialTargets = SpecialTargets
-local UNITSAROUNDUNITCOUNT = UNITSAROUNDUNITCOUNT
-local UNITSAROUNDUNITTIME = UNITSAROUNDUNITTIME
+local UnitsAroundUnit_Count = UnitsAroundUnit_Count
+local UnitsAroundUnit_Time = UnitsAroundUnit_Time
 
 local LibHunter = {}
 LibHunter.BurstHasteCheck = BurstHasteCheck
@@ -120,25 +120,19 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 		-- ?
 	elseif command == "autotarget" then
 		if moretext == "lowest" then
-			DEBUG(2, "SLASHCMD->autotarget->lowest")
+			print("Autotargetting changed to: lowest")
 			AUTOTARGETALGORITHM = "lowest"
 			CACHEUNITSALGORITHM = "lowest"
 		elseif moretext == "nearest" then
-			DEBUG(2, "SLASHCMD->autotarget->nearest")
+			print("Autotargetting changed to: nearest")
 			AUTOTARGETALGORITHM = "nearest"
 			CACHEUNITSALGORITHM = "nearest"
-		elseif moretext == "focus" then
-			DEBUG(2, "SLASHCMD->autotarget->focus")
-			AUTOTARGETALGORITHM = "focus"
-		elseif moretext == "skull" then
-			DEBUG(2, "SLASHCMD->autotarget->skull")
-			AUTOTARGETALGORITHM = "skull"
 		elseif moretext == "cascade" then
-			DEBUG(2, "SLASHCMD->autotarget->cascade")
+			print("Autotargetting changed to: cascade")
 			AUTOTARGETALGORITHM = "cascade"
 		else
 			print("Current Autotarget settings: "..AUTOTARGETALGORITHM.."")
-			print("Usage: /rahunter autotarget lowest \124 nearest \124 focus \124 skull \124 cascade")
+			print("Usage: /rahunter autotarget lowest \124 nearest \124 cascade")
 		end
 	elseif command == "cast" then
 		if moretext == "aimed shot" then				-- MM
@@ -263,6 +257,60 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 	end
 
 	if LibHunter.QueueSpell ~= nil then LibHunter.QueueTime = GetTime() end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+TRANQ A BUFF
+	* If target is attackable then we search through the targets buffs/debuffs for "Magic" and ""
+	debuffTypes. The "" (blank) type is an oddity with Blizzard. Its the "Enrage" debuffType. If
+	it finds a buff we can dispell with Tranquillize the function returns true, otherwise returns
+	false.
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.TranqABuff()
+
+	if UnitExists("target") then
+        local total = 0
+        local totalObjects = ObjectCount()
+
+        for i = 1, totalObjects do
+            local _, object = pcall(ObjectWithIndex, i)
+            local _, object_exists = pcall(ObjectExists, object)
+            local _, obj_text = pcall(tostring, object)
+
+            if object_exists then
+                local _, oType = pcall(ObjectType, object)
+                local bitband = bit.band(oType, ObjectTypes.Unit)
+
+                if bitband > 0 then
+                	local _, dead = pcall(UnitIsDeadOrGhost, object)
+                	local _, reaction = pcall(UnitReaction, "player", object)
+                    local _, special_target = pcall(LibHunter.SpecialTargetCheck, object)
+                    local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
+                    local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
+
+                    if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
+                        for i = 1, 40 do
+							local dispell_type = select(6, pcall(UnitAura, object, i))
+
+							if dispell_type == "" or dispell_type == "Magic" then
+								DEBUG(5, "TranqABuff(true) dispell_type:("..dispell_type..")")
+								Macro("/target "..object.."")
+								return true
+							end
+						end
+
+						DEBUG(5, "TranqullizeABuff dispellable buff not found")
+						return false
+
+                    end
+                end
+            end
+        end
+    else
+    	DEBUG(5, "TranqullizeABuff->UnitExists false")
+    	return false
+    end
 end
 
 

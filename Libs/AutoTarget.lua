@@ -18,18 +18,18 @@ function AutoTarget()
     if AUTOTARGETALGORITHM == "lowest" or AUTOTARGETALGORITHM == "nearest" then
         for i=1, count do
             if ObjectExists(CACHEUNITSTABLE[i].key) then
-                DEBUG(4, "ObjectExists(): true")
+                DEBUG(5, "ObjectExists(): true")
 
                 if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
-                    DEBUG(4, "ImmuneTargetCheck(): false")
+                    DEBUG(5, "ImmuneTargetCheck(): false")
 
                     if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
-                        DEBUG(4, "TargetIsInFrontCheck(): true")
+                        DEBUG(5, "TargetIsInFrontCheck(): true")
 
                         if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
-                            DEBUG(4, "UnitCanAttack(true)")
+                            DEBUG(5, "UnitCanAttack(true)")
 
-                            DEBUG(3, "Targeting: "..CACHEUNITSTABLE[i].key.."")
+                            DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
                             return Macro("/target "..CACHEUNITSTABLE[i].key)
                         else
                             DEBUG(5, "UnitCanAttack(false)")
@@ -44,18 +44,47 @@ function AutoTarget()
                 DEBUG(5, "ObjectExists(): false")
             end
         end
-    elseif AUTOTARGETALGORITHM == "focus" then
-        DEBUG(3, "Targeting: Focus' Target")
-        return Macro("/target focustarget")
-
-    elseif AUTOTARGETALGORITHM == "skull" then
+    else
         for i=1, count do
             if GetRaidTargetIndex("..CACHEUNITSTABLE[i].key..") == 8 then
-                DEBUG(3, "Targeting: Skull")
+                DEBUG(4, "Targeting: Skull")
                 return Macro("/target "..CACHEUNITSTABLE[i].key)
             end
         end
-    else
+
+        if UnitExists("focustarget") then
+            DEBUG(4, "Targeting: Focus' Target")
+            return Macro("/target focustarget")
+        else
+            for i=1, count do
+                if ObjectExists(CACHEUNITSTABLE[i].key) then
+                    DEBUG(5, "ObjectExists(): true")
+
+                    if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
+                        DEBUG(5, "ImmuneTargetCheck(): false")
+
+                        if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
+                            DEBUG(5, "TargetIsInFrontCheck(): true")
+
+                            if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
+                                DEBUG(5, "UnitCanAttack(true)")
+
+                                DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
+                                return Macro("/target "..CACHEUNITSTABLE[i].key)
+                            else
+                                DEBUG(5, "UnitCanAttack(false)")
+                            end
+                        else
+                            DEBUG(5, "TargetIsInFrontCheck(): false")
+                        end
+                    else
+                        DEBUG(5, "ImmuneTargetCheck(): true")
+                    end
+                else
+                    DEBUG(5, "ObjectExists(): false")
+                end
+            end
+        end
 
     end
 
@@ -107,7 +136,7 @@ function CacheUnits()
                         DEBUG(4, "("..i..") Health: ("..health..") > 0 true")
 
                         if reaction and reaction <= 4 and (tapped_by_me or tapped_by_all or special_target) then
-                            DEBUG(1, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
+                            DEBUG(4, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
 
                             if CACHEUNITSALGORITHM == "nearest" then
                                 CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = distance}

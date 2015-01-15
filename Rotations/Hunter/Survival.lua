@@ -173,7 +173,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
     ----------------------------------------------------------------------------------------------]]
     {{
         { "Concussive Shot", { "target.moving", "!target.immune.snare", }, },
-        { "Tranquilizing Shot", { "target.dispellable", }, "target", },
+        { "Tranquilizing Shot", { "@LibHunter.TranqABuff()", }, },
     }, "toggle.pvpmode", },
 
 

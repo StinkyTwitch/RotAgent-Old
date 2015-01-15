@@ -1,30 +1,24 @@
 
-NOW
-
--- REWRITE: target.area().enemies current PE doesn't work for me atm.
--- TRANQ NOT WORKING
--- ADD Blazing Tricksters to SpecialTargets
-
 ----------------------------------------------------------------------------------------------------
 -- Version 0.1 Hunter
 ----------------------------------------------------------------------------------------------------
 
 ## Priority ##
-[  0%]	* Autotarget, If/then tables for:
+[100%]	* Autotarget, If/then tables for:
 				- Nearest
 				- Lowest Health
-				- Focus Target's Target
-				- Skull icon
+				- Cascade (Skull icon to FocusTarget to Nearest/Lowest)
 [  0%]	* One Lib File for each class.
-		[  0%]	- Local Variables and Functions and Tables. Each rotation will have only one
-				- dependency.
-				- Interface\AddOn\Probably_RA\Lib\LibHunter.lua
-				- Interface\AddOn\Probably_RA\Rotation\hunter-marksmanship.lua
+				- Local Variables and Functions and Tables.
+		[ 33%]	- Interface\AddOn\Probably_RA\Lib\LibHunter.lua
+		[  0%]	- Interface\AddOn\Probably_RA\Rotation\hunter-beastmastery.lua
+		[  0%]	- Interface\AddOn\Probably_RA\Rotation\hunter-marksmanship.lua
+		[100%]	- Interface\AddOn\Probably_RA\Rotation\hunter-survival.lua
 
 ## Normal ##
 [  0%]	* GUI
 [  0%]	* Autoloot
-[  0%]	* Forward Disengage
+[100%]	* Forward Disengage
 [  0%]	* WoD Auto Object Interaction
 		[  0%]	* Blacklist for Auto Object Interaction
 [100%]	* TimeToDie logic (prevent cooldown usage on trash)
@@ -34,13 +28,10 @@ NOW
 [100%]	* Pool focus if Rapid Fire is close to coming off of cooldown
 [100%]	* Working Tranquilizing Shot
 [100%]	* Improve Autotarget/Switchtarget (NEEDS MORE TESTING BUT SHOULD BE DONE)
-[100%]	* Marksmanship Single Target/Multi-Target
-[ 50%]	* Beast Mastery Single Target/Multi-Target
-[  0%]	* Survival Single Target/Multi-Target
-[ 33%]	* Opener
+[ 66%]	* Opener
 		[100%]	* Marksmanship
 		[  0%]	* Beast Mastery
-		[  0%]	* Survival
+		[100%]	* Survival
 [100%]	* Careful Aim Phase
 [100%]	* Manual Pool Focus keybind (LeftControl in combat)
 [100%]	* Racials
@@ -54,7 +45,6 @@ NOW
 [  0%]	* PvP Auto build Focus for Tranquilizing Shot
 
 [  0%]	* General code clean up
-[100%]	* Move CheckAimedCast to LibPRA as a general Lib call
 
 -- Version 0.2 Monk
 

@@ -1,14 +1,12 @@
 
 ----------------------------------------------------------------------------------------------------
 -------------------------------------------------|--------------------------------------------------
---                                            GLOBALS                                             --
+--                                       GLOBAL CONSTANTS                                         --
 -------------------------------------------------|--------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 DEBUGLOGLEVEL = 1
 DEBUGTOGGLE = true
 BASESTATVALUE = {}
-UNITSAROUNDUNITCOUNT = 0
-UNITSAROUNDUNITTIME = 0
 
 
 
@@ -138,6 +136,9 @@ TranqableBuffs = {
 	161203,		-- Kyrak (UBRS)
 	-- PVP
 }
+
+UnitsAroundUnit_Count = 0
+UnitsAroundUnit_Time = 0
 
 
 
@@ -472,11 +473,11 @@ function UnitsAroundUnit(unit, distance, check_value)
     local unit = tostring(unit)
     local distance = tonumber(distance)
     local check_value = check_value
-    local update = 0.1
+    local time_valid = 0.1
 
-    if UNITSAROUNDUNITTIME and ( (UNITSAROUNDUNITTIME + update) > GetTime() ) then
-        if UNITSAROUNDUNITCOUNT > check_value then
-        	DEBUG(1, "Total Units Around Unit("..unit.."): "..UNITSAROUNDUNITCOUNT.."")
+    if UnitsAroundUnit_Time and ( (UnitsAroundUnit_Time + time_valid) > GetTime() ) then
+        if UnitsAroundUnit_Count > check_value then
+        	DEBUG(2, "Total Units Around Unit("..unit.."): "..UnitsAroundUnit_Count.."")
         	return true
         else
         	return false
@@ -499,7 +500,7 @@ function UnitsAroundUnit(unit, distance, check_value)
                 	local _, dead = pcall(UnitIsDeadOrGhost, object)
                 	local _, reaction = pcall(UnitReaction, "player", object)
                     local _, special_target = pcall(SpecialTargetCheck, object)
-                    local _, tapped_by_me = pcall(UnitIsTappedByMe, object)
+                    local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
                     local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
                     local _, x1, y1, z1 = pcall(ObjectPosition, unit)
                     local _, x2, y2, z2 = pcall(ObjectPosition, object)
@@ -517,9 +518,9 @@ function UnitsAroundUnit(unit, distance, check_value)
             end
         end
 
-        DEBUG(1, "Total Units Around Unit("..unit.."): "..total.."")
-        UNITSAROUNDUNITCOUNT = total
-        UNITSAROUNDUNITTIME = GetTime()
+        DEBUG(2, "Total Units Around Unit("..unit.."): "..total.."")
+        UnitsAroundUnit_Count = total
+        UnitsAroundUnit_Time = GetTime()
 
         if total > check_value then
         	return true
