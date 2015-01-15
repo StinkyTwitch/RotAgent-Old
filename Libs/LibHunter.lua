@@ -142,29 +142,29 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 		elseif moretext == "aotf" then					-- ALL
 			LibHunter.QueueSpell = 172106
 		elseif moretext == "arcane shot" then			-- SV
-            LibHunter.QueueSpell = 3044
+			LibHunter.QueueSpell = 3044
 		elseif moretext == "barrage" then				-- ALL Talent
 			LibHunter.QueueSpell = 120360
 		elseif moretext == "binding shot" then			-- ALL Talent
 			LibHunter.QueueSpell = 109248
 		elseif moretext == "black arrow" then			-- SV
-            LibHunter.QueueSpell = 3674
-        elseif moretext == "camouflage" then			-- ALL
-            LibHunter.QueueSpell = 51753
-        elseif moretext == "chimaera shot" then			-- MM
+			LibHunter.QueueSpell = 3674
+		elseif moretext == "camouflage" then			-- ALL
+			LibHunter.QueueSpell = 51753
+		elseif moretext == "chimaera shot" then			-- MM
 			LibHunter.QueueSpell = 53209
 		elseif moretext == "concussive shot" then		-- ALL
 			LibHunter.QueueSpell = 5116
 		elseif moretext == "counter shot" then			-- ALL
-            LibHunter.QueueSpell = 147362
-        elseif moretext == "deterrence" then			-- ALL
-            LibHunter.QueueSpell = 148467
+			LibHunter.QueueSpell = 147362
+		elseif moretext == "deterrence" then			-- ALL
+			LibHunter.QueueSpell = 148467
 		elseif moretext == "disengage" then				-- ALL
 			LibHunter.QueueSpell = 781
 		elseif moretext == "distracting shot" then		-- ALL
-            LibHunter.QueueSpell = 20736
-        elseif moretext == "explosive shot" then		-- SV
-            LibHunter.QueueSpell = 53301
+			LibHunter.QueueSpell = 20736
+		elseif moretext == "explosive shot" then		-- SV
+			LibHunter.QueueSpell = 53301
 		elseif moretext == "explosive trap" then		-- ALL
 			if UnitAura("player", "Trap Launcher") then
 				LibHunter.QueueSpell = 82939
@@ -176,7 +176,7 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 		elseif moretext == "flare" then					-- ALL
 			LibHunter.QueueSpell = 1543
 		elseif moretext == "focusing shot" then			-- ALL Talent
-            LibHunter.QueueSpell = 152245
+			LibHunter.QueueSpell = 152245
 		elseif moretext == "freezing trap" then			-- ALL
 			if UnitAura("player", "Trap Launcher") then
 				LibHunter.QueueSpell = 60192
@@ -270,27 +270,27 @@ TRANQ A BUFF
 function LibHunter.TranqABuff()
 
 	if UnitExists("target") then
-        local total = 0
-        local totalObjects = ObjectCount()
+		local total = 0
+		local totalObjects = ObjectCount()
 
-        for i = 1, totalObjects do
-            local _, object = pcall(ObjectWithIndex, i)
-            local _, object_exists = pcall(ObjectExists, object)
-            local _, obj_text = pcall(tostring, object)
+		for i = 1, totalObjects do
+			local _, object = pcall(ObjectWithIndex, i)
+			local _, object_exists = pcall(ObjectExists, object)
+			local _, obj_text = pcall(tostring, object)
 
-            if object_exists then
-                local _, oType = pcall(ObjectType, object)
-                local bitband = bit.band(oType, ObjectTypes.Unit)
+			if object_exists then
+				local _, oType = pcall(ObjectType, object)
+				local bitband = bit.band(oType, ObjectTypes.Unit)
 
-                if bitband > 0 then
-                	local _, dead = pcall(UnitIsDeadOrGhost, object)
-                	local _, reaction = pcall(UnitReaction, "player", object)
-                    local _, special_target = pcall(LibHunter.SpecialTargetCheck, object)
-                    local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
-                    local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
+				if bitband > 0 then
+					local _, dead = pcall(UnitIsDeadOrGhost, object)
+					local _, reaction = pcall(UnitReaction, "player", object)
+					local _, special_target = pcall(LibHunter.SpecialTargetCheck, object)
+					local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
+					local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
 
-                    if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
-                        for i = 1, 40 do
+					if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
+						for i = 1, 40 do
 							local dispell_type = select(6, pcall(UnitAura, object, i))
 
 							if dispell_type == "" or dispell_type == "Magic" then
@@ -303,14 +303,14 @@ function LibHunter.TranqABuff()
 						DEBUG(5, "TranqullizeABuff dispellable buff not found")
 						return false
 
-                    end
-                end
-            end
-        end
-    else
-    	DEBUG(5, "TranqullizeABuff->UnitExists false")
-    	return false
-    end
+					end
+				end
+			end
+		end
+	else
+		DEBUG(5, "TranqullizeABuff->UnitExists false")
+		return false
+	end
 end
 
 

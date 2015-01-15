@@ -4,9 +4,12 @@
 --                                       GLOBAL CONSTANTS                                         --
 -------------------------------------------------|--------------------------------------------------
 ----------------------------------------------------------------------------------------------------
+AUTOTARGETALGORITHM = "lowest"
+BASESTATSVALUE = {}
+CACHEUNITSALGORITHM = "lowest"
+CACHEUNITSTABLE = {}
 DEBUGLOGLEVEL = 1
 DEBUGTOGGLE = true
-BASESTATVALUE = {}
 
 
 
@@ -137,6 +140,11 @@ TranqableBuffs = {
 	-- PVP
 }
 
+
+--[[------------------------------------------------------------------------------------------------
+VARIABLES TO TRACK UNITS AROUND UNIT
+
+--------------------------------------------------------------------------------------------------]]
 UnitsAroundUnit_Count = 0
 UnitsAroundUnit_Time = 0
 
@@ -157,12 +165,93 @@ UnitsAroundUnit_Time = 0
 
 
 --[[------------------------------------------------------------------------------------------------
+AUTO TARGET
+
+--------------------------------------------------------------------------------------------------]]
+function AutoTarget()
+	if UnitExists("target") and not UnitIsDeadOrGhost("target") then
+		return false
+	end
+
+	local count = table.getn(CACHEUNITSTABLE)
+	DEBUG(5, "CACHEUNITSTABLE count: ("..count..")")
+
+	if AUTOTARGETALGORITHM == "lowest" or AUTOTARGETALGORITHM == "nearest" then
+		for i=1, count do
+			if ObjectExists(CACHEUNITSTABLE[i].key) then
+				DEBUG(5, "ObjectExists(): true")
+				if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
+					DEBUG(5, "ImmuneTargetCheck(): false")
+					if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
+						DEBUG(5, "TargetIsInFrontCheck(): true")
+						if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
+							DEBUG(5, "UnitCanAttack(true)")
+							DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
+							return Macro("/target "..CACHEUNITSTABLE[i].key)
+						else
+							DEBUG(5, "UnitCanAttack(false)")
+						end
+					else
+						DEBUG(5, "TargetIsInFrontCheck(): false")
+					end
+				else
+					DEBUG(5, "ImmuneTargetCheck(): true")
+				end
+			else
+				DEBUG(5, "ObjectExists(): false")
+			end
+		end
+	else
+		for i=1, count do
+			if GetRaidTargetIndex("..CACHEUNITSTABLE[i].key..") == 8 then
+				DEBUG(4, "Targeting: Skull")
+				return Macro("/target "..CACHEUNITSTABLE[i].key)
+			end
+		end
+		if UnitExists("focustarget") then
+			DEBUG(4, "Targeting: Focus' Target")
+			return Macro("/target focustarget")
+		else
+			for i=1, count do
+				if ObjectExists(CACHEUNITSTABLE[i].key) then
+					DEBUG(5, "ObjectExists(): true")
+					if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
+						DEBUG(5, "ImmuneTargetCheck(): false")
+						if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
+							DEBUG(5, "TargetIsInFrontCheck(): true")
+							if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
+								DEBUG(5, "UnitCanAttack(true)")
+								DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
+								return Macro("/target "..CACHEUNITSTABLE[i].key)
+							else
+								DEBUG(5, "UnitCanAttack(false)")
+							end
+						else
+							DEBUG(5, "TargetIsInFrontCheck(): false")
+						end
+					else
+						DEBUG(5, "ImmuneTargetCheck(): true")
+					end
+				else
+					DEBUG(5, "ObjectExists(): false")
+				end
+			end
+		end
+
+	end
+
+	DEBUG(5, "AutoTarget() false")
+	return false
+end
+
+
+--[[------------------------------------------------------------------------------------------------
 BASE STATS
 
 --------------------------------------------------------------------------------------------------]]
 function BaseStats()
 	for i=1, 5 do
-		BASESTATVALUE[#BASESTATVALUE+1] = UnitStat("player", i)
+		BASESTATSVALUE[#BASESTATSVALUE+1] = UnitStat("player", i)
 	end
 end
 
@@ -172,8 +261,24 @@ BASE STATS PRINT
 
 --------------------------------------------------------------------------------------------------]]
 function BaseStatsPrint()
-	for k,v in pairs(BASESTATVALUE) do
+	for k,v in pairs(BASESTATSVALUE) do
 		print(k, v)
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+BASE STATS UPDATE
+
+--------------------------------------------------------------------------------------------------]]
+function BaseStatsUpdate()
+	if not UnitAffectingCombat("player") then
+		for i=1, 5 do
+			local stat = UnitStat("player", i)
+			if BASESTATSVALUE[i] ~= stat then
+				BASESTATSVALUE[i] = stat
+			end
+		end
 	end
 end
 
@@ -190,9 +295,77 @@ function BurstHasteCheck()
 			DEBUG(1, "Burst Haste Active!")
 			return true
 		else
-            return false
-        end
-    end
+			return false
+		end
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+CACHE UNITS
+
+--------------------------------------------------------------------------------------------------]]
+function CacheUnits()
+	wipe(CACHEUNITSTABLE)
+	local total_objects = ObjectCount()
+
+	for i=1, total_objects do
+		local _, object = pcall(ObjectWithIndex, i)
+		local _, object_exists = pcall(ObjectExists, object)
+
+		if object_exists then
+			local _, obj_text = pcall(tostring, object)
+			local _, oType = pcall(ObjectType, object)
+			local bitband = bit.band(oType, ObjectTypes.Unit)
+
+			local _, x1, y1, z1 = pcall(ObjectPosition, "player")
+			local _, x2, y2, z2 = pcall(ObjectPosition, object)
+			local dx = x2 - x1
+			local dy = y2 - y1
+			local dz = z2 - z1
+			local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+
+			local _, pcall_health = pcall(UnitHealth, object)
+			local _, pcall_health_max = pcall(UnitHealthMax, object)
+			local health = math.floor((pcall_health / pcall_health_max) * 100)
+
+			local _, reaction = pcall(UnitReaction, "player", object)
+			local _, special_target = pcall(SpecialTargetCheck, object)
+			local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
+			local _, tapped_by_all_threat_list = pcall(UnitIsTappedByAllThreatList, object)
+
+
+			if bitband > 0 then
+				DEBUG(4, "("..i..") bit.band compare true: "..oType..","..ObjectTypes.Unit.." bit.band:  ("..bitband..")")
+				if distance <= 40 then
+					DEBUG(4, "("..i..") Distance: ("..distance..") <= 40 true")
+					if health > 0 then
+						DEBUG(4, "("..i..") Health: ("..health..") > 0 true")
+						if reaction and reaction <= 4 and (tapped_by_me or tapped_by_all or special_target) then
+							DEBUG(4, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
+							if CACHEUNITSALGORITHM == "nearest" then
+								CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = distance}
+								table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
+								DEBUG(3, ""..i..": Object Pointer: "..obj_text.." - Distance: "..distance.."")
+							elseif CACHEUNITSALGORITHM == "lowest" then
+								CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = health}
+								table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
+								DEBUG(3, ""..i..": Object Pointer: "..obj_text.." - Health: "..health.."")
+							end
+						else
+							DEBUG(5, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
+						end
+					else
+						DEBUG(5, "("..i..") health: ("..health..") > 0 false")
+					end
+				else
+					DEBUG(5, "("..i..") distance: ("..distance..") <= 40 false")
+				end
+			else
+				DEBUG(5, "("..i..") bit.band compare false: "..oType..","..ObjectTypes.Unit.." bit.band:  ("..bitband..")")
+			end
+		end
+	end
 end
 
 
@@ -227,22 +400,22 @@ end
 CLEAR TARGET
 --------------------------------------------------------------------------------------------------]]
 function ClearCurrentTarget()
-    if not UnitExists("target") then
-    	DEBUG(5, "ClearCurrentTarget->not UnitExists->false")
-    	return false
-    elseif ImmuneTargetCheck("target") then
-    	DEBUG(5, "ClearCurrentTarget->SpecialTargetCheck->false")
-        return false
-    elseif UnitCanAttack("player", "target") then
-    	DEBUG(5, "ClearCurrentTarget->false3")
-    	return false
-    elseif UnitAffectingCombat("target") then
-    	DEBUG(5, "ClearCurrentTarget->false4")
-    	return false
-    else
-    	DEBUG(5, "ClearCurrentTarget->true")
-    	return true
-    end
+	if not UnitExists("target") then
+		DEBUG(5, "ClearCurrentTarget->not UnitExists->false")
+		return false
+	elseif ImmuneTargetCheck("target") then
+		DEBUG(5, "ClearCurrentTarget->SpecialTargetCheck->false")
+		return false
+	elseif UnitCanAttack("player", "target") then
+		DEBUG(5, "ClearCurrentTarget->false3")
+		return false
+	elseif UnitAffectingCombat("target") then
+		DEBUG(5, "ClearCurrentTarget->false4")
+		return false
+	else
+		DEBUG(5, "ClearCurrentTarget->true")
+		return true
+	end
 end
 
 
@@ -300,18 +473,18 @@ function ImmuneTargetCheck(unit)
 		return false
 	else
 		if SpecialAuraCheck(unit, ImmuneAuras) then
-	    	DEBUG(2, "ImmuneTargetCheck->SpecialAuraCheck->true")
-	        return true
-	    elseif not UnitCanAttack("player", unit) and not UnitIsFriend("player", unit) then
-	    	DEBUG(2, "ImmuneTargetCheck->UnitCanAttack->true")
+			DEBUG(2, "ImmuneTargetCheck->SpecialAuraCheck->true")
 			return true
-	    elseif not UnitAffectingCombat(unit) and not SpecialTargetCheck(unit) then
-	    	DEBUG(2, "ImmuneTargetCheck->UnitAffectingCombat,SpecialTargetCheck->true")
-	        return true
-	    else
-	    	DEBUG(2, "ImmuneTargetCheck() false")
-	        return false
-	    end
+		elseif not UnitCanAttack("player", unit) and not UnitIsFriend("player", unit) then
+			DEBUG(2, "ImmuneTargetCheck->UnitCanAttack->true")
+			return true
+		elseif not UnitAffectingCombat(unit) and not SpecialTargetCheck(unit) then
+			DEBUG(2, "ImmuneTargetCheck->UnitAffectingCombat,SpecialTargetCheck->true")
+			return true
+		else
+			DEBUG(2, "ImmuneTargetCheck() false")
+			return false
+		end
 	end
 end
 
@@ -360,16 +533,16 @@ function SpecialAuraCheck(unit, special_aura_table)
 		return false
 	end
 
-    for i = 1, 40 do
-        local spell_id = select(11, UnitDebuff(unit, i))
+	for i = 1, 40 do
+		local spell_id = select(11, UnitDebuff(unit, i))
 
-        for k,v in pairs(special_aura_table) do
-            if spell_id == v then
-                return true
-            end
-        end
-        return false
-    end
+		for k,v in pairs(special_aura_table) do
+			if spell_id == v then
+				return true
+			end
+		end
+		return false
+	end
 end
 
 
@@ -378,26 +551,26 @@ SPECIAL TARGET CHECK
 
 --------------------------------------------------------------------------------------------------]]
 function SpecialTargetCheck(unit)
-    local unit = unit
-    local count = table.getn(SpecialTargets)
+	local unit = unit
+	local count = table.getn(SpecialTargets)
 
-    if not UnitExists(unit) then
-        return false
-    end
+	if not UnitExists(unit) then
+		return false
+	end
 
-    if UnitGUID(unit) then
-        targets_guid = tonumber(string.match(UnitGUID(unit), "-(%d+)-%x+$"))
-    else
-        targets_guid = 0
-    end
+	if UnitGUID(unit) then
+		targets_guid = tonumber(string.match(UnitGUID(unit), "-(%d+)-%x+$"))
+	else
+		targets_guid = 0
+	end
 
-    for i=1, count do
-        if targets_guid == SpecialTargets[i] then
-            return true
-        end
-    end
+	for i=1, count do
+		if targets_guid == SpecialTargets[i] then
+			return true
+		end
+	end
 
-    return false
+	return false
 end
 
 
@@ -428,24 +601,24 @@ function TargetIsInFrontCheck(unit)
 
 	if not UnitExists(unit) then
 		DEBUG(5, "TargetIsInFrontCheck->UnitExists(unit)->false")
-        return false
-    end
+		return false
+	end
 
-    local aX, aY, aZ = ObjectPosition(unit)
-    local bX, bY, bZ = ObjectPosition("player")
-    local player_facing = GetPlayerFacing()
-    local facing = math.atan2(bY - aY, bX - aX) % 6.2831853071796
+	local aX, aY, aZ = ObjectPosition(unit)
+	local bX, bY, bZ = ObjectPosition("player")
+	local player_facing = GetPlayerFacing()
+	local facing = math.atan2(bY - aY, bX - aX) % 6.2831853071796
 
-    --[[
-    if math.abs(math.deg(math.abs(player_facing - (facing))) - 180) < 90 then
-    	DEBUG(5, "TargetIsInFrontCheck->angle<90->true")
-    	return true
-    else
-    	DEBUG(5, "TargetIsInFrontCheck->angle<90->false")
-    	return false
-    end
-    --]]
-    return math.abs(math.deg(math.abs(player_facing - (facing))) - 180) < 90
+	--[[
+	if math.abs(math.deg(math.abs(player_facing - (facing))) - 180) < 90 then
+		DEBUG(5, "TargetIsInFrontCheck->angle<90->true")
+		return true
+	else
+		DEBUG(5, "TargetIsInFrontCheck->angle<90->false")
+		return false
+	end
+	--]]
+	return math.abs(math.deg(math.abs(player_facing - (facing))) - 180) < 90
 end
 
 
@@ -470,64 +643,64 @@ UNITS AROUND UNIT
 
 --------------------------------------------------------------------------------------------------]]
 function UnitsAroundUnit(unit, distance, check_value)
-    local unit = tostring(unit)
-    local distance = tonumber(distance)
-    local check_value = check_value
-    local time_valid = 0.1
+	local unit = tostring(unit)
+	local distance = tonumber(distance)
+	local check_value = check_value
+	local time_valid = 0.1
 
-    if UnitsAroundUnit_Time and ( (UnitsAroundUnit_Time + time_valid) > GetTime() ) then
-        if UnitsAroundUnit_Count > check_value then
-        	DEBUG(2, "Total Units Around Unit("..unit.."): "..UnitsAroundUnit_Count.."")
-        	return true
-        else
-        	return false
-        end
-    end
+	if UnitsAroundUnit_Time and ( (UnitsAroundUnit_Time + time_valid) > GetTime() ) then
+		if UnitsAroundUnit_Count > check_value then
+			DEBUG(2, "Total Units Around Unit("..unit.."): "..UnitsAroundUnit_Count.."")
+			return true
+		else
+			return false
+		end
+	end
 
-    if UnitExists(unit) then
-        local total = 0
-        local totalObjects = ObjectCount()
+	if UnitExists(unit) then
+		local total = 0
+		local totalObjects = ObjectCount()
 
-        for i = 1, totalObjects do
-            local _, object = pcall(ObjectWithIndex, i)
-            local _, object_exists = pcall(ObjectExists, object)
+		for i = 1, totalObjects do
+			local _, object = pcall(ObjectWithIndex, i)
+			local _, object_exists = pcall(ObjectExists, object)
 
-            if object_exists then
-                local _, oType = pcall(ObjectType, object)
-                local bitband = bit.band(oType, ObjectTypes.Unit)
+			if object_exists then
+				local _, oType = pcall(ObjectType, object)
+				local bitband = bit.band(oType, ObjectTypes.Unit)
 
-                if bitband > 0 then
-                	local _, dead = pcall(UnitIsDeadOrGhost, object)
-                	local _, reaction = pcall(UnitReaction, "player", object)
-                    local _, special_target = pcall(SpecialTargetCheck, object)
-                    local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
-                    local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
-                    local _, x1, y1, z1 = pcall(ObjectPosition, unit)
-                    local _, x2, y2, z2 = pcall(ObjectPosition, object)
-                    local dx = x2 - x1
-                    local dy = y2 - y1
-                    local dz = z2 - z1
-                    local distance_between_unit_and_object = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+				if bitband > 0 then
+					local _, dead = pcall(UnitIsDeadOrGhost, object)
+					local _, reaction = pcall(UnitReaction, "player", object)
+					local _, special_target = pcall(SpecialTargetCheck, object)
+					local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
+					local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
+					local _, x1, y1, z1 = pcall(ObjectPosition, unit)
+					local _, x2, y2, z2 = pcall(ObjectPosition, object)
+					local dx = x2 - x1
+					local dy = y2 - y1
+					local dz = z2 - z1
+					local distance_between_unit_and_object = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
 
-                    if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
-                        if distance_between_unit_and_object <= distance then
-                            total = total + 1
-                        end
-                    end
-                end
-            end
-        end
+					if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
+						if distance_between_unit_and_object <= distance then
+							total = total + 1
+						end
+					end
+				end
+			end
+		end
 
-        DEBUG(2, "Total Units Around Unit("..unit.."): "..total.."")
-        UnitsAroundUnit_Count = total
-        UnitsAroundUnit_Time = GetTime()
+		DEBUG(2, "Total Units Around Unit("..unit.."): "..total.."")
+		UnitsAroundUnit_Count = total
+		UnitsAroundUnit_Time = GetTime()
 
-        if total > check_value then
-        	return true
-        else
-        	return false
-        end
-    end
+		if total > check_value then
+			return true
+		else
+			return false
+		end
+	end
 
 end
 

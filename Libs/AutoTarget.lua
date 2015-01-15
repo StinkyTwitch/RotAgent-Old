@@ -19,16 +19,12 @@ function AutoTarget()
         for i=1, count do
             if ObjectExists(CACHEUNITSTABLE[i].key) then
                 DEBUG(5, "ObjectExists(): true")
-
                 if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
                     DEBUG(5, "ImmuneTargetCheck(): false")
-
                     if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
                         DEBUG(5, "TargetIsInFrontCheck(): true")
-
                         if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
                             DEBUG(5, "UnitCanAttack(true)")
-
                             DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
                             return Macro("/target "..CACHEUNITSTABLE[i].key)
                         else
@@ -51,7 +47,6 @@ function AutoTarget()
                 return Macro("/target "..CACHEUNITSTABLE[i].key)
             end
         end
-
         if UnitExists("focustarget") then
             DEBUG(4, "Targeting: Focus' Target")
             return Macro("/target focustarget")
@@ -59,16 +54,12 @@ function AutoTarget()
             for i=1, count do
                 if ObjectExists(CACHEUNITSTABLE[i].key) then
                     DEBUG(5, "ObjectExists(): true")
-
                     if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
                         DEBUG(5, "ImmuneTargetCheck(): false")
-
                         if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
                             DEBUG(5, "TargetIsInFrontCheck(): true")
-
                             if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
                                 DEBUG(5, "UnitCanAttack(true)")
-
                                 DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
                                 return Macro("/target "..CACHEUNITSTABLE[i].key)
                             else
@@ -128,16 +119,12 @@ function CacheUnits()
 
             if bitband > 0 then
                 DEBUG(4, "("..i..") bit.band compare true: "..oType..","..ObjectTypes.Unit.." bit.band:  ("..bitband..")")
-
                 if distance <= 40 then
                     DEBUG(4, "("..i..") Distance: ("..distance..") <= 40 true")
-
                     if health > 0 then
                         DEBUG(4, "("..i..") Health: ("..health..") > 0 true")
-
                         if reaction and reaction <= 4 and (tapped_by_me or tapped_by_all or special_target) then
                             DEBUG(4, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
-
                             if CACHEUNITSALGORITHM == "nearest" then
                                 CACHEUNITSTABLE[#CACHEUNITSTABLE+1] = {key = obj_text, value = distance}
                                 table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
@@ -147,7 +134,6 @@ function CacheUnits()
                                 table.sort(CACHEUNITSTABLE, function(a,b) return a.value < b.value end)
                                 DEBUG(3, ""..i..": Object Pointer: "..obj_text.." - Health: "..health.."")
                             end
-
                         else
                             DEBUG(5, "("..i..") Reaction("..reaction..") TappedByMe("..tostring(tapped_by_me)..") TappedByAll("..tostring(tapped_by_all_threat_list)..") or SpecialTarget("..tostring(special_target)..")")
                         end

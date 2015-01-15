@@ -5,7 +5,6 @@
 ## Version: 0.0.1
 ## Dependencies: Probably
 
-Libs\AutoTarget.lua
 Libs\Globals.lua
 Libs\LibHunter.lua
 
