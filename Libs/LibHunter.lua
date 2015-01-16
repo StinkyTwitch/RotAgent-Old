@@ -294,7 +294,7 @@ function LibHunter.TranqABuff()
 							local dispell_type = select(6, pcall(UnitAura, object, i))
 
 							if dispell_type == "" or dispell_type == "Magic" then
-								DEBUG(5, "TranqABuff(true) dispell_type:("..dispell_type..")")
+								DEBUG(1, "TranqABuff(true) dispell_type:("..dispell_type..") switching target.")
 								Macro("/target "..object.."")
 								return true
 							end
