@@ -469,20 +469,20 @@ function ImmuneTargetCheck(unit)
 	local unit = unit
 
 	if not UnitExists(unit) then
-		DEBUG(2, "ImmuneTargetCheck() UnitExists->true")
+		DEBUG(5, "ImmuneTargetCheck() UnitExists->true")
 		return false
 	else
 		if SpecialAuraCheck(unit, ImmuneAuras) then
-			DEBUG(2, "ImmuneTargetCheck->SpecialAuraCheck->true")
+			DEBUG(5, "ImmuneTargetCheck->SpecialAuraCheck->true")
 			return true
 		elseif not UnitCanAttack("player", unit) and not UnitIsFriend("player", unit) then
-			DEBUG(2, "ImmuneTargetCheck->UnitCanAttack->true")
+			DEBUG(5, "ImmuneTargetCheck->UnitCanAttack->true")
 			return true
 		elseif not UnitAffectingCombat(unit) and not SpecialTargetCheck(unit) then
-			DEBUG(2, "ImmuneTargetCheck->UnitAffectingCombat,SpecialTargetCheck->true")
+			DEBUG(5, "ImmuneTargetCheck->UnitAffectingCombat,SpecialTargetCheck->true")
 			return true
 		else
-			DEBUG(2, "ImmuneTargetCheck() false")
+			DEBUG(5, "ImmuneTargetCheck() false")
 			return false
 		end
 	end
