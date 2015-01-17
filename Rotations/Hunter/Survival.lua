@@ -299,7 +299,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "Multi-Shot", { "talent(7,2)", }, },
 
 				--actions.aoe+=/focusing_shot
-				{ "Focusing Shot", { "!player.moving", "player.lastmoved > 1", }, },
+				{ "Focusing Shot", },
 
 				--actions.aoe+=/cobra_shot
 				{ "Cobra Shot", },
@@ -345,7 +345,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 			{ "Arcane Shot", {"talent(7,2)", }, },
 
 			--actions+=/focusing_shot
-			{ "Focusing Shot", { "!player.moving", "player.lastmoved > 1", }, },
+			{ "Focusing Shot", },
 
 			--actions+=/cobra_shot
 			{ "Cobra Shot", },
@@ -432,6 +432,11 @@ function()
 		'Interface\\Icons\\ability_hunter_misdirection',
 		'Misdirect', 'Auto Misdirect to Focus or Pet'
 	)
+	ProbablyEngine.toggle.create(
+        'nocleave',
+        'Interface\\Icons\\Warrior_talent_icon_mastercleaver',
+        'No Cleave', 'Do not use any cleave/aoe abilities'
+    )
 	ProbablyEngine.toggle.create(
 		'petmgmt',
 		'Interface\\Icons\\Ability_hunter_beasttraining',

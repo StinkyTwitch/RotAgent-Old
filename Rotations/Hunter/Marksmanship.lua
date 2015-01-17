@@ -43,6 +43,11 @@ function()
 		'Misdirect', 'Auto Misdirect to Focus or Pet'
 	)
 	ProbablyEngine.toggle.create(
+        'nocleave',
+        'Interface\\Icons\\Warrior_talent_icon_mastercleaver',
+        'No Cleave', 'Do not use any cleave/aoe abilities'
+    )
+	ProbablyEngine.toggle.create(
 		'petmgmt',
 		'Interface\\Icons\\Ability_hunter_beasttraining',
 		'Pet Management', 'Pet auto Attack/Heal/Revive'
@@ -57,11 +62,22 @@ function()
 		'Interface\\Icons\\Achievement_bg_grab_cap_flagunderxseconds',
 		'ShortCDs', 'Use short Cooldowns'
 	)
-	ProbablyEngine.toggle.create(
-        'nocleave',
-        'Interface\\Icons\\Warrior_talent_icon_mastercleaver',
-        'No Cleave', 'Do not use any cleave/aoe abilities'
-    )
-	GRunAutoTargetCode = true
+
+	BaseStats()
+
+	C_Timer.NewTicker(0.1, (function()
+		-- Out of Combat Timer Functions
+		BaseStatsUpdate()
+
+		-- In Combat Timer Functions
+		if ProbablyEngine.config.read('button_states', 'MasterToggle', false)
+			and ProbablyEngine.config.read('button_states', 'autotarget', false)
+			and ProbablyEngine.module.player.combat
+		then
+			DEBUG(5, "Marksmanship.lua:C_Timer.NewTicker()")
+			CacheUnits()
+			AutoTarget()
+		end
+	end), nil)
 end
 )
