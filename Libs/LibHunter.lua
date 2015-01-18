@@ -143,12 +143,18 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 			LibHunter.QueueSpell = 172106
 		elseif moretext == "arcane shot" then			-- SV
 			LibHunter.QueueSpell = 3044
+		elseif moretext == "arcane torrent" then 		-- RACIAL
+			LibHunter.QueueSpell = 80483
 		elseif moretext == "barrage" then				-- ALL Talent
 			LibHunter.QueueSpell = 120360
+		elseif moretext == "berserking" then 			-- RACIAL
+			LibHunter.QueueSpell = 26297
 		elseif moretext == "binding shot" then			-- ALL Talent
 			LibHunter.QueueSpell = 109248
 		elseif moretext == "black arrow" then			-- SV
 			LibHunter.QueueSpell = 3674
+		elseif moretext == "blood fury" then 			-- RACIAL
+			LibHunter.QueueSpell = 20572
 		elseif moretext == "camouflage" then			-- ALL
 			LibHunter.QueueSpell = 51753
 		elseif moretext == "chimaera shot" then			-- MM
@@ -197,6 +203,8 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 			LibHunter.QueueSpell = 157708
 		elseif moretext == "masters call" then			-- ALL
 			LibHunter.QueueSpell = 53271
+		elseif moretext == "mend pet" then 				-- ALL
+			LibHunter.QueueSpell = 136
 		elseif moretext == "multi-shot" then			-- ALL
 			LibHunter.QueueSpell = 2643
 		elseif moretext == "powershot" then				-- ALL Talent
