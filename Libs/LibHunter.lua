@@ -12,6 +12,7 @@ local UnitsAroundUnit_Time = UnitsAroundUnit_Time
 
 local LibHunter = {}
 LibHunter.BurstHasteCheck = BurstHasteCheck
+LibHunter.CastingCheck = CastingCheck
 LibHunter.ClassificationValue = ClassificationValue
 LibHunter.ClearCurrentTarget = ClearCurrentTarget
 LibHunter.EvalClassification = EvalClassification
@@ -351,24 +352,251 @@ end
 
 
 --[[------------------------------------------------------------------------------------------------
-SimC14plusCRlessthanorequaltoFD
+SimC MM 14 + Steady Shot Cast Regen + Aimed Shot Cast Regen <= Focus Deficit
 
 --------------------------------------------------------------------------------------------------]]
-function LibHunter.SimC14plusCRlessthanorequaltoFD()
+function LibHunter.SimCMM14plusSSCRplusASCRlessthanorequaltoFD()
+	--actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
+	local focus_current 	= UnitPower("player")
+	local focus_max 		= UnitPowerMax("player")
+	local focus_deficit 	= (focus_max - focus_current)
+	local spell_haste		= UnitSpellHaste("player")
+	local ss_base_cast_time	= 2
+	local ss_cast_time 		= (ss_base_cast_time / ((spell_haste / 100) + 1))
+	local ss_cast_regen 	= ss_cast_time * (GetPowerRegen())
+	local as_base_cast_time	= 2.5
+	local as_cast_time 		= (as_base_cast_time / ((spell_haste / 100) + 1))
+	local as_cast_regen		= as_cast_time * (GetPowerRegen())
+
+	if (14 + ss_cast_regen + as_cast_regen) <= focus_deficit then
+		DEBUG(1, "14 + Steady Shot Cast Regen("..ss_cast_regen..") + Aimed Shot Cast Regen("..as_cast_regen..") <= Focus Deficit("..focus_deficit..") is true")
+		return true
+	else
+		DEBUG(5, "14 + Steady Shot Cast Regen("..ss_cast_regen..") + Aimed Shot Cast Regen("..as_cast_regen..") <= Focus Deficit("..focus_deficit..") is false")
+		return false
+	end
+
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM 50 + Focusing Shot Cast Regen < Focus Deficit
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMM50FSCRlessthanFD()
+	--actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
+	local focus_current 	= UnitPower("player")
+	local focus_max 		= UnitPowerMax("player")
+	local focus_deficit 	= (focus_max - focus_current)
+	local spell_haste		= UnitSpellHaste("player")
+	local fs_base_cast_time	= 3
+	local fs_cast_time 		= (fs_base_cast_time / ((spell_haste / 100) + 1))
+	local fs_cast_regen 	= fs_cast_time * (GetPowerRegen() )
+
+	if (fs_cast_regen < focus_deficit) then
+		DEBUG(2, "Focusing Shot Cast Regen("..fs_cast_regen..") < Focus Deficit("..focus_deficit..") is true")
+		return true
+	else
+		DEBUG(5, "Focusing Shot Cast Regen("..fs_cast_regen..") < Focus Deficit("..focus_deficit..") is false")
+		return false
+	end
+end
+
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM 50 + Focusing Shot Cast Regen - 10 < Focus Deficit
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMM50plusFSCRminus10lessthanFD()
+	--actions+=/focusing_shot,if=50+cast_regen-10<focus.deficit
+	local focus_current 	= UnitPower("player")
+	local focus_max 		= UnitPowerMax("player")
+	local focus_deficit 	= (focus_max - focus_current)
+	local spell_haste		= UnitSpellHaste("player")
+	local fs_base_cast_time	= 3
+	local fs_cast_time 		= (fs_base_cast_time / ((spell_haste / 100) + 1))
+	local fs_cast_regen 	= fs_cast_time * (GetPowerRegen())
+
+	if (50 + fs_cast_regen - 10) < focus_deficit then
+		DEBUG(2, "50 + Focusing Shot Cast Regen("..fs_cast_regen..") - 10 < Focus Deficit("..focus_deficit..") is true")
+		return true
+	else
+		DEBUG(5, "50 + Focusing Shot Cast Regen("..fs_cast_regen..") - 10 < Focus Deficit("..focus_deficit..") is false")
+		return false
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM Dire Beast Cast Regen + Aimed Shot Cast Regen < Focus Deficit
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMMDBCRplusASCRlessthanFD()
+	--actions+=/dire_beast,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
+	local focus_current 	= UnitPower("player")
+	local focus_max 		= UnitPowerMax("player")
+	local focus_deficit 	= (focus_max - focus_current)
+	local spell_haste		= UnitSpellHaste("player")
+	local db_base_cast_time	= 1
+	local db_cast_time 		= (db_base_cast_time / ((spell_haste / 100) + 1))
+	local db_cast_regen 	= db_cast_time * (GetPowerRegen())
+
+	local as_base_cast_time	= 2.5
+	local as_cast_time 		= (as_base_cast_time / ((spell_haste / 100) + 1))
+	local as_cast_regen		= as_cast_time * (GetPowerRegen())
+
+	if (db_cast_regen + as_cast_regen) < focus_deficit then
+		DEBUG(2, "Dire Beast Cast Regen("..db_cast_regen..") + Aimed Shot Cast Regen("..as_cast_regen..") < Focus Deficit("..focus_deficit..") is true")
+		return true
+	else
+		DEBUG(5, "Dire Beast Cast Regen("..db_cast_regen..") + Aimed Shot Cast Regen("..as_cast_regen..") < Focus Deficit("..focus_deficit..") is false")
+		return false
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM Focus + Aimed Shot Cast Regen >= 65
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMMFplusASCRgreaterthanorequalto65()
+	--factions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
+	local focus_check		= 65
+	local focus_current 	= UnitPower("player")
+	local spell_haste		= UnitSpellHaste("player")
+	local as_base_cast_time	= 2.5
+	local as_cast_time 		= (as_base_cast_time / ((spell_haste / 100) + 1))
+	local as_cast_regen		= as_cast_time * (GetPowerRegen())
+
+	if (focus_current + as_cast_regen) >= focus_check then
+		DEBUG(1, "Focus("..focus_current..") + Aimed Shot Cast Regen("..as_cast_regen..") >= 65 is true")
+		return true
+	else
+		DEBUG(5, "Focus("..focus_current..") + Aimed Shot Cast Regen("..as_cast_regen..") >= 65 is false")
+		return false
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM Focus + Aimed Shot Cast Regen >= 85
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMMFplusASCRgreaterthanorequalto85()
+	--actions+=/aimed_shot,if=focus+cast_regen>=85
+	local focus_check		= 85
+	local focus_current 	= UnitPower("player")
+	local spell_haste		= UnitSpellHaste("player")
+	local as_base_cast_time	= 2.5
+	local as_cast_time 		= (as_base_cast_time / ((spell_haste / 100) + 1))
+	local as_cast_regen		= as_cast_time * (GetPowerRegen())
+
+	if (focus_current + as_cast_regen) >= focus_check then
+		DEBUG(1, "Focus("..focus_current..") + Aimed Shot Cast Regen("..as_cast_regen..") >= 85 is true")
+		return true
+	else
+		DEBUG(5, "Focus("..focus_current..") + Aimed Shot Cast Regen("..as_cast_regen..") >= 85 is false")
+		return false
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM Focus Deficit * Focusing Shot Cast Time / 50 + Focusing Shot Cast Regen > Rapid Fire Cooldown
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMMFDtimesFSCTdividedby50plusFSCRgreatherthanRFCD()
+	--actions+=/focusing_shot,if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100
+	local focus_current 	= UnitPower("player")
+	local focus_max 		= UnitPowerMax("player")
+	local focus_deficit 	= (focus_max - focus_current)
+	local spell_haste		= UnitSpellHaste("player")
+	local fs_base_cast_time	= 3
+	local fs_cast_time 		= (fs_base_cast_time / ((spell_haste / 100) + 1))
+	local fs_cast_regen 	= fs_cast_time * ( GetPowerRegen() )
+	local rapid_fire_start, rapid_fire_duration, enabled = GetSpellCooldown("Rapid Fire")
+	local rapid_fire_cd 	= math.abs((rapid_fire_start + rapid_fire_duration) - GetTime())
+
+	if ((focus_deficit * fs_cast_time) / (14 + fs_cast_regen)) > rapid_fire_cd then
+		DEBUG(2, "F.D.("..focus_deficit..") * F.S.C.T.("..fs_cast_time..") / 50 + F.S.C.R.("..fs_cast_regen..") > Rapid Fire Cooldown("..rapid_fire_cd..") is true")
+		return true
+	else
+		DEBUG(5, "F.D.("..focus_deficit..") * F.S.C.T.("..fs_cast_time..") / 50 + F.S.C.R.("..fs_cast_regen..") > Rapid Fire Cooldown("..rapid_fire_cd..") is false")
+		return false
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM Focus Deficit * Steady Shot Cast Time / 14 + Steady Shot Cast Regen > Rapid Fire Cooldown
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMMFDtimesSSCTdividedby14plusSSCRgreatherthanRFCD()
+	--actions+=/steady_shot,if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains
+	local focus_current 	= UnitPower("player")
+	local focus_max 		= UnitPowerMax("player")
+	local focus_deficit 	= (focus_max - focus_current)
+	local spell_haste		= UnitSpellHaste("player")
+	local ss_base_cast_time	= 2
+	local ss_cast_time 		= (ss_base_cast_time / ((spell_haste / 100) + 1))
+	local ss_cast_regen 	= ss_cast_time * ( GetPowerRegen() )
+	local rapid_fire_start, rapid_fire_duration, enabled = GetSpellCooldown("Rapid Fire")
+	local rapid_fire_cd 	= math.abs((rapid_fire_start + rapid_fire_duration) - GetTime())
+
+	if ((focus_deficit * ss_cast_time) / (14 + ss_cast_regen)) > rapid_fire_cd then
+		DEBUG(1, "S.D.("..focus_deficit..") * S.S.C.T.("..ss_cast_time..") / 14 + S.S.C.R.("..ss_cast_regen..") > Rapid Fire Cooldown("..rapid_fire_cd..") is true")
+		return true
+	else
+		DEBUG(5, "F.D.("..focus_deficit..") * S.S.C.T.("..ss_cast_time..") / 14 + S.S.C.R.("..ss_cast_regen..") > Rapid Fire Cooldown("..rapid_fire_cd..") is false")
+		return false
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC MM Powershot Cast Regen < Focus Deficit
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCMMPSCRlessthanFD()
+	--actions+=/powershot,if=cast_regen<focus.deficit
+	local focus_current 	= UnitPower("player")
+	local focus_max 		= UnitPowerMax("player")
+	local focus_deficit 	= (focus_max - focus_current)
+	local spell_haste		= UnitSpellHaste("player")
+	local ps_base_cast_time	= 2.25
+	local ps_cast_time 		= (ps_base_cast_time / ((spell_haste / 100) + 1))
+	local ps_cast_regen 	= ps_cast_time * (GetPowerRegen() )
+
+	if (ps_cast_regen < focus_deficit) then
+		DEBUG(2, "Powershot Cast Regen("..ps_cast_regen..") < Focus Deficit("..focus_deficit..") is true")
+		return true
+	else
+		DEBUG(5, "Powershot Cast Regen("..ps_cast_regen..") < Focus Deficit("..focus_deficit..") is false")
+		return false
+	end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SimC SV 14 + Cobra Shot Cast Regen <= Focus Deficit
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SimCSV14plusCSCRlessthanorequaltoFD()
 	--actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit
 	local focus_current 	= UnitPower("player")
 	local focus_max 		= UnitPowerMax("player")
 	local focus_deficit 	= (focus_max - focus_current)
 	local spell_haste		= UnitSpellHaste("player")
-	local base_cast_time	= 2
-	local cast_time 		= (base_cast_time / ((spell_haste / 100) + 1))
-	local cast_regen 		= cast_time * (GetPowerRegen())
+	local cs_base_cast_time	= 2
+	local cs_cast_time 		= (cs_base_cast_time / ((spell_haste / 100) + 1))
+	local cs_cast_regen 	= cs_cast_time * (GetPowerRegen())
 
-	if (14 + cast_regen) <= (focus_deficit) then
-		DEBUG(4, "14plusCastRegenlessthanFocusDefict(): true (14 + "..cast_regen..") <= ("..focus_deficit..")")
+	if (14 + cs_cast_regen) <= (focus_deficit) then
+		DEBUG(2, "14 + Cobra Shot Cast Regen("..cs_cast_regen..") <= Focus Deficit("..focus_deficit..") is true")
 		return true
 	else
-		DEBUG(4, "14plusCastRegenlessthanFocusDefict(): false (14 + "..cast_regen..") <= ("..focus_deficit..")")
+		DEBUG(5, "14 + Cobra Shot Cast Regen("..cs_cast_regen..") <= Focus Deficit("..focus_deficit..") is true")
 		return false
 	end
 end
@@ -391,6 +619,38 @@ function LibHunter.SimCBuffPotionUp(itemID)
 		return false
 	end
 end
+
+
+--[[------------------------------------------------------------------------------------------------
+Careful Aim Check
+
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.CarefulAimCheck(check_value)
+	--actions+=/call_action_list,name=careful_aim,if=buff.careful_aim.up
+	if UnitCanAttack("player", "target") then
+		local check_target = ClassificationValue(UnitClassification("target"))
+		local check_value = ClassificationValue(check_value)
+		local target_health = (tonumber(format("%.2f", (UnitHealth("target") / UnitHealthMax("target")) * 100 )))
+		local combat_time = (GetTime() - ProbablyEngine.module.player.combatTime)
+		local rapid_fire_start, rapid_fire_duration, enabled = GetSpellCooldown("Rapid Fire")
+		local rapid_fire_active	= (math.abs(rapid_fire_start - GetTime()))
+
+		if UnitBuff("player", "Rapid Fire") then
+			DEBUG(1, "Rapid Fire Active:"..rapid_fire_active.."")
+			return true
+		elseif (check_target >= check_value) and target_health > 80 then
+			DEBUG(1, "Careful Aim Active:"..combat_time.."")
+			return true
+		else
+			DEBUG(5, "Rapid Fire and/or Careful Aim not active")
+			return false
+		end
+	else
+		DEBUG(5, "Player can not attack target")
+		return false
+	end
+end
+
 
 --[[------------------------------------------------------------------------------------------------
 SimCCRlessthanorequaltoFD

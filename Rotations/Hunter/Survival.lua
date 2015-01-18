@@ -27,7 +27,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 	  * Holding Left Control will cause the rotation to only cast Steady Shot to pool focus.
 	  * Cast Steady Shot if Rapid Fire is coming off of Cooldown and we are not focus capped.
 	----------------------------------------------------------------------------------------------]]
-	{ "Steady Shot", { "modifier.lcontrol", "!talent(7,2)", }, },
+	{ "Cobra Shot", { "modifier.lcontrol", "!talent(7,2)", }, },
 	{ "Focusing Shot", { "modifier.lcontrol", "talent(7,2)", }, },
 
 
@@ -355,7 +355,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 
 			--# Cast a second shot for steady focus if that won't cap us.
 			--actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit
-			{ "Cobra Shot", { "lastcast(Cobra Shot)", "player.buff(Steady Focus) < 5", "@LibHunter.SimC14plusCRlessthanorequaltoFD()", }, },
+			{ "Cobra Shot", { "lastcast(Cobra Shot)", "player.buff(Steady Focus) < 5", "@LibHunter.SimCSV14plusCSCRlessthanorequaltoFD()", }, },
 
 			--actions+=/arcane_shot,if=focus>=80|talent.focusing_shot.enabled
 			{ "Arcane Shot", {"player.focus >= 80", }, },

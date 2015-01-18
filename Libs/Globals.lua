@@ -36,7 +36,7 @@ BurstHasteBuffs = {
     90355,      -- Ancient Hysteria
     80353,      -- Time Warp
     2825,       -- Bloodlust
-    146555      -- Drums
+    146555,     -- Drums
 }
 
 
@@ -365,6 +365,21 @@ function CacheUnits()
                 DEBUG(5, "("..i..") bit.band compare false: "..oType..","..ObjectTypes.Unit.." bit.band:  ("..bitband..")")
             end
         end
+    end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+CLASSIFICATION VALUE
+* Checks if the player is casting a specific spell. Takes string argument to evaluate against.
+Returns true if the player is casting the spell to check against, false otherwise.
+--------------------------------------------------------------------------------------------------]]
+function CastingCheck(spell_name)
+    local casting_spell = select(1, (UnitCastingInfo("player")))
+    if casting_spell == spell_name then
+        return true
+    else
+        return false
     end
 end
 
