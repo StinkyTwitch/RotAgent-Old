@@ -126,6 +126,7 @@ SpecialTargets = {
     76518,      -- Ritual of Bones (Shadowmoon Burial Grounds)
     79511,      -- Blazing Trickster (Auchindoun Heroic)
     81638,      -- Aqueous Globule (The Everbloom)
+    153792,     -- Rallying Banner (UBRS Black Iron Grunt)
 }
 
 

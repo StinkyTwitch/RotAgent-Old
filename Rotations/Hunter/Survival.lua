@@ -276,7 +276,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "Explosive Shot", { "player.buff(Lock and Load)", "player.spell(Barrage).cooldown > 0", }, },
 
 				--actions.aoe+=/barrage
-				{ "Barrage", },
+				{ "Barrage", { "!toggle.nocleave", }, },
 
 				--actions.aoe+=/black_arrow,if=!ticking
 				{ "Black Arrow", { "player.spell(Black Arrow).cooldown = 0", }, },
@@ -285,7 +285,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "Explosive Shot", { "target.area(10).enemies <5", }, },
 
 				--actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
-				{ "Explosive Trap", nil, "target.ground", },
+				{ "Explosive Trap", { "!toggle.nocleave", }, "target.ground", },
 
 				--actions.aoe+=/a_murder_of_crows
 				{ "A Murder of Crows", { "target.deathin > 60", "toggle.shortcds", }, },
@@ -297,23 +297,23 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				--actions.aoe+=/multishot,if=buff.thrill_of_the_hunt.react&focus>50&cast_regen<=focus.deficit|
 				--             dot.serpent_sting.remains<=5|
 				--             target.time_to_die<4.5
-				{ "Multi-Shot", { "player.buff(Thrill of the Hunt)", "player.focus > 50", "@LibHunter.SimCCRlessthanorequaltoFD()" }, },
-				{ "Multi-Shot", { "target.debuff(Serpent Sting).duration <=5", }, },
-				{ "Multi-Shot", { "target.deathin < 4.5", }, },
+				{ "Multi-Shot", { "player.buff(Thrill of the Hunt)", "player.focus > 50", "@LibHunter.SimCCRlessthanorequaltoFD()", "!toggle.nocleave", }, },
+				{ "Multi-Shot", { "target.debuff(Serpent Sting).duration <=5", "!toggle.nocleave", }, },
+				{ "Multi-Shot", { "target.deathin < 4.5", "!toggle.nocleave", }, },
 
 				--actions.aoe+=/glaive_toss
-				{ "Glaive Toss", },
+				{ "Glaive Toss", { "!toggle.nocleave", }, },
 
 				--actions.aoe+=/powershot
-				{ "Powershot", },
+				{ "Powershot", { "!toggle.nocleave", }, },
 
 				--actions.aoe+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+cast_regen<80
 				{ "Cobra Shot", { "lastcast(Cobra Shot)", "player.buff(Steady Focus) < 5", "@LibHunter.SimCFplus14plusCRlessthan80()", }, },
 
 				--actions.aoe+=/multishot,if=focus>=70|
 				--             talent.focusing_shot.enabled
-				{ "Multi-Shot", { "player.focus >= 70", }, },
-				{ "Multi-Shot", { "talent(7,2)", }, },
+				{ "Multi-Shot", { "player.focus >= 70", "!toggle.nocleave", }, },
+				{ "Multi-Shot", { "talent(7,2)", "!toggle.nocleave", }, },
 
 				--actions.aoe+=/focusing_shot
 				{ "Focusing Shot", },
@@ -351,7 +351,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 			{ "Arcane Shot", { "target.deathin < 4.5", }, },
 
 			--actions+=/explosive_trap
-			{ "Explosive Trap", { "target.deathin >= 10", }, "target.ground", },
+			{ "Explosive Trap", { "target.deathin >= 10", "!toggle.nocleave", }, "target.ground", },
 
 			--# Cast a second shot for steady focus if that won't cap us.
 			--actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit
