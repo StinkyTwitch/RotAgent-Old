@@ -17,6 +17,7 @@ LibHunter.ClassificationValue = ClassificationValue
 LibHunter.ClearCurrentTarget = ClearCurrentTarget
 LibHunter.EvalClassification = EvalClassification
 LibHunter.ImmuneTargetCheck = ImmuneTargetCheck
+LibHunter.NotImmuneTargetCheck = NotImmuneTargetCheck
 LibHunter.SpecialAuraCheck = SpecialAuraCheck
 LibHunter.SpecialTargetCheck = SpecialTargetCheck
 LibHunter.StatProcs = StatProcs
@@ -78,7 +79,7 @@ end
 
 -- Verify Vector
 function VerifyDisengage(vector)
-	local current_vector = ObjectFacing("player")
+	local _, current_vector = pcall(ObjectFacing, "player")
 
 	if current_vector ~= vector then
 		FaceDirection(vector)
@@ -90,8 +91,8 @@ end
 
 -- Disengage Forward
 function DisengageForward()
-	local initial_vector = (ObjectFacing("player"))
-	local disengage_vector = (mod( ObjectFacing("player") + math.pi, math.pi * 2 ))
+	local _, initial_vector = pcall(ObjectFacing, "player")
+	local disengage_vector = (mod( initial_vector + math.pi, math.pi * 2 ))
 
 	C_Timer.After(.001, function() FaceDirection(disengage_vector) end)
 	C_Timer.After(.35, function() VerifyDisengage(disengage_vector) end)
@@ -266,6 +267,94 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 	end
 
 	if LibHunter.QueueSpell ~= nil then LibHunter.QueueTime = GetTime() end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SERPENT STING DOT CHECK
+	*
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SerpentStingDotCheck()
+	local count = table.getn(CACHEUNITSTABLE)
+	local unit_without_serpent_sting = nil
+
+	for i=1, count do
+		local _, x1, y1, z1 = pcall(ObjectPosition, "player")
+        local _, x2, y2, z2 = pcall(ObjectPosition, CACHEUNITSTABLE[i].key)
+        local dx = x2 - x1
+        local dy = y2 - y1
+        local dz = z2 - z1
+        local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+		local _, has_serpent_sting = pcall(UnitAura, CACHEUNITSTABLE[i].key, "Serpent Sting")
+		--local has_serpent_sting = UnitDebuff(CACHEUNITSTABLE[i].key, "Serpent Sting")
+
+		if has_serpent_sting == nil then
+			if distance <= 40 then
+				DEBUG(1, "Unit("..CACHEUNITSTABLE[i].key..") has serpent sting ("..tostring(has_serpent_sting)..")")
+				unit_without_serpent_sting = i
+			end
+		end
+	end
+	if unit_without_serpent_sting ~= nil then
+		Macro("/target "..CACHEUNITSTABLE[unit_without_serpent_sting].key)
+		Macro("/cast Arcane Shot")
+		Macro("/targetlasttarget")
+		return true
+	end
+	return false
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SERPENT STING DOT CHECK
+	*
+--------------------------------------------------------------------------------------------------]]
+function SerpentStingDotCheck()
+	local count = table.getn(CACHEUNITSTABLE)
+	local unit_without_serpent_sting = nil
+
+	for i=1, count do
+		local _, x1, y1, z1 = pcall(ObjectPosition, "player")
+        local _, x2, y2, z2 = pcall(ObjectPosition, CACHEUNITSTABLE[i].key)
+        local dx = x2 - x1
+        local dy = y2 - y1
+        local dz = z2 - z1
+        local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+		local _, has_serpent_sting = pcall(UnitAura, CACHEUNITSTABLE[i].key, "Serpent Sting")
+		--local has_serpent_sting = UnitDebuff(CACHEUNITSTABLE[i].key, "Serpent Sting")
+
+		if has_serpent_sting == nil then
+			if distance <= 40 then
+				DEBUG(1, "Unit("..CACHEUNITSTABLE[i].key..") has serpent sting ("..tostring(has_serpent_sting)..")")
+				unit_without_serpent_sting = i
+			end
+		end
+	end
+	if unit_without_serpent_sting ~= nil then
+		ProbablyEngine.dsl.parsedTarget = CACHEUNITSTABLE[unit_without_serpent_sting].key
+		return true
+	end
+	return false
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+SUMMON PET
+	* Need to verify we have no pet or dismiss pet if we do before using CastSpellByName
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.SummonPet()
+    if LibHunterPRA.SummonPetNumber == 6 then
+        LibHunterPRA.SummonPetNumber = 1
+    end
+
+    NotificationFrame:message("Summon Pet "..LibHunter.SummonPetNumber.."")
+
+    if UnitExists("pet") then
+        CastSpellByName("Dismiss Pet")
+        C_Timer.After(4, function() CastSpellByName( "Call Pet "..LibHunter.SummonPetNumber.."" ) end)
+    else
+        CastSpellByName( "Call Pet "..LibHunter.SummonPetNumber.."" )
+    end
 end
 
 

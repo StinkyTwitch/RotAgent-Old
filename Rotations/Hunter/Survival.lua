@@ -8,7 +8,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 	  * Rotation will stop if Left Shift is held down, Feign Death is up or the player is eating or
 		is mounted. This will additionally recall your pet to prevent any outgoing DPS.
 	----------------------------------------------------------------------------------------------]]
-	{ "/stopcasting\n/stopcasting\n/stopattack\n/petfollow", { "@LibHunter.ImmuneTargetCheck('target')", }, },
+	{ "/stopcasting\n/stopcasting\n/stopattack\n/petfollow", { "@LibHunter.ImmuneTargetCheck(5, 'target')", }, },
 	{ "/stopcasting\n/stopattack\n/petfollow", { "modifier.lshift", }, },
 	{ "/stopcasting\n/stopattack\n/petfollow", { "lastcast(Feign Death)", }, },
 	{ "/stopattack\n/petfollow", { "player.buff(Food)", }, },
@@ -27,8 +27,8 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 	  * Holding Left Control will cause the rotation to only cast Steady Shot to pool focus.
 	  * Cast Steady Shot if Rapid Fire is coming off of Cooldown and we are not focus capped.
 	----------------------------------------------------------------------------------------------]]
-	{ "Cobra Shot", { "modifier.lcontrol", "!talent(7,2)", }, },
-	{ "Focusing Shot", { "modifier.lcontrol", "talent(7,2)", }, },
+	{ "Cobra Shot", { "modifier.rcontrol", "!talent(7,2)", }, },
+	{ "Focusing Shot", { "modifier.rcontrol", "talent(7,2)", }, },
 
 
 
@@ -40,10 +40,13 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 
 
 	--[[--------------------------------------------------------------------------------------------
-	MAINTENANCE
+	MISCELLANEOUS
 
 	----------------------------------------------------------------------------------------------]]
-
+	{ "Freezing Trap", { "modifier.lcontrol", }, "mouseover.ground", },
+	{ "Multi-Shot", { "toggle.ss", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff(Serpent Sting)", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+	{ "Arcane Shot", { "toggle.ss", "!modifier.lcontrol", "!mouseover.debuff(Serpent Sting)", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+	{ "Arcane Shot", { "toggle.ss", "modifier.lalt", "!mouseover.debuff(Serpent Sting)", }, "mouseover", },
 
 
 
@@ -164,7 +167,9 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 	----------------------------------------------------------------------------------------------]]
 	{{
 		{ "#5512", { "player.health < 40", }, },
-		{ "Deterrence", { "player.health < 10", }, },
+		{ "#109223", { "player.health <= 10", }, },
+		{ "Deterrence", { "player.health <= 10", }, },
+		{ "Exhilaration", { "player.health < 50"}, },
 		{ "Master's Call", { "pet.exists", "player.state.disorient", }, },
 		{ "Master's Call", { "pet.exists", "player.state.stun", }, },
 		{ "Master's Call", { "pet.exists", "player.state.root", }, },
@@ -208,10 +213,11 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 		{ "#trinket2", { "modifier.cooldowns", }, },
 		{ "Blood Fury", { "modifier.cooldowns", }, },
 		{ "A Murder of Crows", { "modifier.cooldowns", }, },
-		{ "Explosive Shot", },
+		{ "Explosive Shot", { "!player.buff(Thrill of the Hunt)", }, },
+		{ "Arcane Shot", { "player.buff(Thrill of the Hunt)", "player.buff(Balanced Fate)", }, },
 		{ "Black Arrow", },
-		{ "Arcane Shot", },
-	}, {"@LibHunter.UseOpenerCheck('rareelite', 4)", }, },
+		{ "Arcane Shot", { "!target.debuff(Serpent Sting)", }, },
+	}, {"@LibHunter.UseOpenerCheck('trivial', 3)", }, },
 
 
 
@@ -256,10 +262,10 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 			--actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|
 			--         buff.archmages_greater_incandescence_agi.up))|
 			--         target.time_to_die<=25
-			{ "#76089", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.spell(Stampede).cooldown < 1", "@LibHunter.StatProcs(2)", }, },
-			{ "#76089", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.spell(A Murder of Crows).cooldown < 1", "@LibHunter.StatProcs(2)", }, },
-			{ "#76089", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.buff(Archmage's Greater Incandescence)", }, },
-			{ "#76089", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "target.deathin <= 25", }, },
+			{ "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.spell(Stampede).cooldown < 1", "@LibHunter.StatProcs(2)", }, },
+			{ "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.spell(A Murder of Crows).cooldown < 1", "@LibHunter.StatProcs(2)", }, },
+			{ "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.buff(Archmage's Greater Incandescence)", }, },
+			{ "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "target.deathin <= 25", }, },
 
 			--actions+=/call_action_list,name=aoe,if=active_enemies>1
 			{{
@@ -276,13 +282,14 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "Explosive Shot", { "player.buff(Lock and Load)", "player.spell(Barrage).cooldown > 0", }, },
 
 				--actions.aoe+=/barrage
-				{ "Barrage", { "!toggle.nocleave", }, },
+				{ "Barrage", { "!toggle.nocleave", "!modifier.lcontrol", }, },
 
 				--actions.aoe+=/black_arrow,if=!ticking
-				{ "Black Arrow", { "player.spell(Black Arrow).cooldown = 0", }, },
+				{ "Black Arrow", { "player.spell(Black Arrow).cooldown = 0", "target.deathin > 12", }, },
 
 				--actions.aoe+=/explosive_shot,if=active_enemies<5
-				{ "Explosive Shot", { "target.area(10).enemies <5", }, },
+				{ "!Explosive Shot", { "player.buff(Lock and Load)", "!player.casting(Barrage)", "target.area(10).enemies <5", }, },
+				{ "Explosive Shot", { "player.focus > 15", "target.area(10).enemies <5", }, },
 
 				--actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
 				{ "Explosive Trap", { "!toggle.nocleave", }, "target.ground", },
@@ -292,7 +299,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "A Murder of Crows", { "target.deathin < 12", }, },
 
 				--actions.aoe+=/dire_beast
-				{ "Dire Beast", },
+				{ "Dire Beast", { "target.deathin > 15", }, },
 
 				--actions.aoe+=/multishot,if=buff.thrill_of_the_hunt.react&focus>50&cast_regen<=focus.deficit|
 				--             dot.serpent_sting.remains<=5|
@@ -302,10 +309,10 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "Multi-Shot", { "target.deathin < 4.5", "!toggle.nocleave", }, },
 
 				--actions.aoe+=/glaive_toss
-				{ "Glaive Toss", { "!toggle.nocleave", }, },
+				{ "Glaive Toss", { "!toggle.nocleave", "target.deathin > 7", }, },
 
 				--actions.aoe+=/powershot
-				{ "Powershot", { "!toggle.nocleave", }, },
+				{ "Powershot", { "!toggle.nocleave", "target.deathin > 22", }, },
 
 				--actions.aoe+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&focus+14+cast_regen<80
 				{ "Cobra Shot", { "lastcast(Cobra Shot)", "player.buff(Steady Focus) < 5", "@LibHunter.SimCFplus14plusCRlessthan80()", }, },
@@ -316,10 +323,10 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "Multi-Shot", { "talent(7,2)", "!toggle.nocleave", }, },
 
 				--actions.aoe+=/focusing_shot
-				{ "Focusing Shot", },
+				{ "Focusing Shot", { "target.deathin > 3", }, },
 
 				--actions.aoe+=/cobra_shot
-				{ "Cobra Shot", },
+				{ "Cobra Shot", { "target.deathin > 2", }, },
 
 			}, { "modifier.multitarget", "@LibHunter.UnitsAroundUnit('target', 10, 1)", }, },
 
@@ -335,13 +342,14 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 			{ "A Murder of Crows", { "target.deathin < 12", }, },
 
 			--actions+=/black_arrow,if=!ticking
-			{ "Black Arrow", { "player.spell(Black Arrow).cooldown = 0", }, },
+			{ "Black Arrow", { "player.spell(Black Arrow).cooldown = 0", "target.deathin > 12", }, },
 
 			--actions+=/explosive_shot
-			{ "Explosive Shot", },
+			{ "!Explosive Shot", { "player.buff(Lock and Load)", "!player.casting(Barrage)", }, },
+			{ "Explosive Shot", { "player.focus > 15", }, },
 
 			--actions+=/dire_beast
-			{ "Dire Beast", },
+			{ "Dire Beast", { "target.deathin > 15", }, },
 
 			--actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react&focus>35&cast_regen<=focus.deficit|
 			--         dot.serpent_sting.remains<=3|
@@ -358,14 +366,14 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 			{ "Cobra Shot", { "lastcast(Cobra Shot)", "player.buff(Steady Focus) < 5", "@LibHunter.SimCSV14plusCSCRlessthanorequaltoFD()", }, },
 
 			--actions+=/arcane_shot,if=focus>=80|talent.focusing_shot.enabled
-			{ "Arcane Shot", {"player.focus >= 80", }, },
-			{ "Arcane Shot", {"talent(7,2)", }, },
+			{ "Arcane Shot", { "player.focus >= 80", }, },
+			{ "Arcane Shot", { "talent(7,2)", }, },
 
 			--actions+=/focusing_shot
-			{ "Focusing Shot", },
+			{ "Focusing Shot", { "target.deathin > 3", }, },
 
 			--actions+=/cobra_shot
-			{ "Cobra Shot", },
+			{ "Cobra Shot", { "target.deathin > 2", }, },
 
 		}, { "target.alive", },
 	},
@@ -445,6 +453,12 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 -- CUSTOM CODE RUN ONCE
 function()
 	ProbablyEngine.toggle.create(
+		'autoamoc',
+		'Interface\\Icons\\ability_hunter_murderofcrows',
+		'Auto AMoC',
+		'Automatically target the lowest health enemy and cast AMoC on that target.'
+	)
+	ProbablyEngine.toggle.create(
 		'autotarget',
 		'Interface\\Icons\\ability_hunter_snipershot',
 		'Auto Target',
@@ -481,6 +495,12 @@ function()
 		'Enable PvP', 'Toggle the usage of PvP abilities'
 	)
 	ProbablyEngine.toggle.create(
+		'ss',
+		'Interface\\Icons\\ability_hunter_quickshot',
+		'Mouseover Arcane Shot',
+		'Automatically apply Arcane Shot to mouseover units while in combat'
+	)
+	ProbablyEngine.toggle.create(
 		'shortcds',
 		'Interface\\Icons\\Achievement_bg_grab_cap_flagunderxseconds',
 		'ShortCDs', 'Use short Cooldowns'
@@ -499,6 +519,7 @@ function()
 		then
 			DEBUG(5, "Survival.lua:C_Timer.NewTicker()")
 			CacheUnits()
+			--DotCastCheck("Serpent Sting", 1, 40)
 			AutoTarget()
 		end
 	end), nil)

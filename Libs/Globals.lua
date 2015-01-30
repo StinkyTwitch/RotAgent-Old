@@ -123,6 +123,7 @@ SpecialTargets = {
     -- WOD DUNGEONS/RAIDS
     75966,      -- Defiled Spirit (Shadowmoon Burial Grounds)
     76220,      -- Blazing Trickster (Auchindoun Normal)
+    76267,      -- Solar Zealot (Skyreach)
     76518,      -- Ritual of Bones (Shadowmoon Burial Grounds)
     79511,      -- Blazing Trickster (Auchindoun Heroic)
     81638,      -- Aqueous Globule (The Everbloom)
@@ -179,7 +180,9 @@ function AutoTarget()
 
     if AUTOTARGETALGORITHM == "lowest" or AUTOTARGETALGORITHM == "nearest" then
         for i=1, count do
-            if ObjectExists(CACHEUNITSTABLE[i].key) then
+            local object_exists = pcall(ObjectExists, CACHEUNITSTABLE[i].key)
+
+            if object_exists then
                 DEBUG(5, "ObjectExists(): true")
                 if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
                     DEBUG(5, "ImmuneTargetCheck(): false")
@@ -214,7 +217,9 @@ function AutoTarget()
             return Macro("/target focustarget")
         else
             for i=1, count do
-                if ObjectExists(CACHEUNITSTABLE[i].key) then
+                local object_exists = pcall(ObjectExists, CACHEUNITSTABLE[i].key)
+
+                if object_exists then
                     DEBUG(5, "ObjectExists(): true")
                     if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
                         DEBUG(5, "ImmuneTargetCheck(): false")
@@ -459,6 +464,46 @@ end
 
 
 --[[------------------------------------------------------------------------------------------------
+DOT CHECK
+    *
+--------------------------------------------------------------------------------------------------]]
+function DotCastCheck(spell_to_cast, time_frame_to_wait, max_distance_from_player)
+    local count = table.getn(CACHEUNITSTABLE)
+    local unit_without_serpent_sting = nil
+    local spell_to_cast = spell_to_cast
+    local time_frame_to_wait = time_frame_to_wait
+    local max_distance_from_player = max_distance_from_player
+
+    for i=1, count do
+        local _, x1, y1, z1 = pcall(ObjectPosition, "player")
+        local _, x2, y2, z2 = pcall(ObjectPosition, CACHEUNITSTABLE[i].key)
+        local dx = x2 - x1
+        local dy = y2 - y1
+        local dz = z2 - z1
+        local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+        local _, has_serpent_sting = pcall(UnitDebuff, CACHEUNITSTABLE[i].key, "Serpent Sting")
+        --local has_serpent_sting = UnitDebuff(CACHEUNITSTABLE[i].key, "Serpent Sting")
+
+        if has_serpent_sting == nil then
+            if distance <= max_distance_from_player then
+                DEBUG(1, "Unit("..CACHEUNITSTABLE[i].key..") has serpent sting ("..tostring(has_serpent_sting)..")")
+                unit_without_serpent_sting = i
+            end
+        end
+    end
+    if unit_without_serpent_sting ~= nil and UnitDebuff(CACHEUNITSTABLE[unit_without_serpent_sting].key, "Serpent Sting") == nil then
+        local target_guid = UnitGUID("target")
+        local object_guid = UnitGUID(CACHEUNITSTABLE[unit_without_serpent_sting].key)
+
+        if target_guid ~= object_guid then
+            TargetUnit(CACHEUNITSTABLE[unit_without_serpent_sting].key)
+            CastSpellByName("Arcane Shot")
+            TargetLastTarget()
+        end
+    end
+end
+
+--[[------------------------------------------------------------------------------------------------
 EVALUATE CLASSIFICATION
 
 --------------------------------------------------------------------------------------------------]]
@@ -481,25 +526,54 @@ IMMUNE TARGET CHECK
 * Credit: MrTheSoulz for the framework
 
 --------------------------------------------------------------------------------------------------]]
-function ImmuneTargetCheck(unit)
-    local unit = unit
+function ImmuneTargetCheck(debuglevel, unit)
+    local unit = tostring(unit)
 
     if not UnitExists(unit) then
-        DEBUG(5, "ImmuneTargetCheck() UnitExists->true")
+        DEBUG(debuglevel, "ImmuneTargetCheck("..unit..") UnitExists false")
         return false
     else
         if SpecialAuraCheck(unit, ImmuneAuras) then
-            DEBUG(5, "ImmuneTargetCheck->SpecialAuraCheck->true")
+            DEBUG(debuglevel, "ImmuneTargetCheck("..unit..") SpecialAuraCheck true")
             return true
         elseif not UnitCanAttack("player", unit) and not UnitIsFriend("player", unit) then
-            DEBUG(5, "ImmuneTargetCheck->UnitCanAttack->true")
+            DEBUG(debuglevel, "ImmuneTargetCheck("..unit..") UnitCanAttack true")
             return true
         elseif not UnitAffectingCombat(unit) and not SpecialTargetCheck(unit) then
-            DEBUG(5, "ImmuneTargetCheck->UnitAffectingCombat,SpecialTargetCheck->true")
+            DEBUG(debuglevel, "ImmuneTargetCheck("..unit..") UnitAffectingCombat,SpecialTargetCheck true")
             return true
         else
-            DEBUG(5, "ImmuneTargetCheck() false")
+            DEBUG(debuglevel, "ImmuneTargetCheck("..unit..") false")
             return false
+        end
+    end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+NOT IMMUNE TARGET CHECK
+* Credit: MrTheSoulz for the framework
+
+--------------------------------------------------------------------------------------------------]]
+function NotImmuneTargetCheck(debuglevel, unit)
+    local unit = tostring(unit)
+
+    if not UnitExists(unit) then
+        DEBUG(debuglevel, "NotImmuneTargetCheck("..unit..") UnitExists false")
+        return false
+    else
+        if SpecialAuraCheck(unit, ImmuneAuras) then
+            DEBUG(debuglevel, "NotImmuneTargetCheck("..unit..") SpecialAuraCheck true")
+            return false
+        elseif not UnitCanAttack("player", unit) and not UnitIsFriend("player", unit) then
+            DEBUG(debuglevel, "NotImmuneTargetCheck("..unit..") UnitCanAttack false")
+            return false
+        elseif not UnitAffectingCombat(unit) then
+            DEBUG(debuglevel, "NotImmuneTargetCheck("..unit..") UnitAffectingCombat false")
+            return false
+        else
+            DEBUG(debuglevel, "NotImmuneTargetCheck("..unit..") true")
+            return true
         end
     end
 end
@@ -620,8 +694,8 @@ function TargetIsInFrontCheck(unit)
         return false
     end
 
-    local aX, aY, aZ = ObjectPosition(unit)
-    local bX, bY, bZ = ObjectPosition("player")
+    local _, aX, aY, aZ = pcall(ObjectPosition, unit)
+    local _, bX, bY, bZ = pcall(ObjectPosition, "player")
     local player_facing = GetPlayerFacing()
     local facing = math.atan2(bY - aY, bX - aX) % 6.2831853071796
 
@@ -696,10 +770,14 @@ function UnitsAroundUnit(unit, distance, check_value)
                     local dx = x2 - x1
                     local dy = y2 - y1
                     local dz = z2 - z1
+                    local _, object_reach = pcall(UnitCombatReach, object)
+                    local _, unit_reach = pcall(UnitCombatReach, unit)
+
                     local distance_between_unit_and_object = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+                    local distance_with_combat_reach = (distance_between_unit_and_object - object_reach - unit_reach)
 
                     if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
-                        if distance_between_unit_and_object <= distance then
+                        if distance_with_combat_reach <= distance then
                             total = total + 1
                         end
                     end
@@ -726,9 +804,14 @@ UNIT TO UNIT DISTANCE CHECK
 
 --------------------------------------------------------------------------------------------------]]
 function UnitToUnitDistanceCheck(unit1, unit2, distance_check)
-    if UnitExists(unit1) and UnitExists(unit2) and UnitCanAttack(unit1, unit2) and not UnitIsDead(unit2) then
-        local x1, y1, z1 = ObjectPosition(unit1)
-        local x2, y2, z2 = ObjectPosition(unit2)
+    local _, unit1_exists = pcall(UnitExists, unit1)
+    local _, unit2_exists = pcall(UnitExists, unit2)
+    local _, can_attack = pcall(UnitCanAttack, unit1, unit2)
+    local _, is_dead = pcall(UnitIsDead, unit2)
+
+    if unit1_exists and unit2_exists and can_attack and not is_dead then
+        local _, x1, y1, z1 = pcall(ObjectPosition, unit1)
+        local _, x2, y2, z2 = pcall(ObjectPosition, unit2)
 
         local dx = x2 - x1
         local dy = y2 - y1
@@ -758,7 +841,7 @@ function UseOpenerCheck(eval_target_type, eval_combat_time)
         local actual_combat_time = (GetTime() - ProbablyEngine.module.player.combatTime)
 
         if actual_combat_time <= eval_combat_time and ( actual_target_type >= eval_target_type ) then
-            DEBUG(1, "Using Opener: "..actual_combat_time.."")
+            DEBUG(1, "Using Opener: "..string.format('%.2f', actual_combat_time).."")
             return true
         else
             return false

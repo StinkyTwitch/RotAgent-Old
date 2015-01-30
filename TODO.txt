@@ -1,5 +1,9 @@
 
 NEXT:
+- Keep Serpent Sting up on all Units in combat with
+
+- Growl ON/OFF depending on Instance
+
 - Auto Interupt, spell list for PvE
 - Rewrite MM profile
 - Write BM profile
@@ -17,9 +21,9 @@ NEXT:
 				- Cascade (Skull icon to FocusTarget to Nearest/Lowest)
 [  0%]	* One Lib File for each class.
 				- Local Variables and Functions and Tables.
-		[ 33%]	- Interface\AddOn\Probably_RA\Lib\LibHunter.lua
+		[ 66%]	- Interface\AddOn\Probably_RA\Lib\LibHunter.lua
 		[  0%]	- Interface\AddOn\Probably_RA\Rotation\hunter-beastmastery.lua
-		[  0%]	- Interface\AddOn\Probably_RA\Rotation\hunter-marksmanship.lua
+		[100%]	- Interface\AddOn\Probably_RA\Rotation\hunter-marksmanship.lua
 		[100%]	- Interface\AddOn\Probably_RA\Rotation\hunter-survival.lua
 
 ## Normal ##

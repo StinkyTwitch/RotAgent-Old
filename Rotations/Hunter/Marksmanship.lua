@@ -27,8 +27,8 @@ ProbablyEngine.rotation.register_custom(254, "Rotation Agent - Marksmanship (Sim
 	  * Holding Left Control will cause the rotation to only cast Steady Shot to pool focus.
 	  * Cast Steady Shot if Rapid Fire is coming off of Cooldown and we are not focus capped.
 	----------------------------------------------------------------------------------------------]]
-	{ "Steady Shot", { "modifier.lcontrol", "!talent(7,2)", }, },
-	{ "Focusing Shot", { "modifier.lcontrol", "talent(7,2)", }, },
+	{ "Steady Shot", { "modifier.rcontrol", "!talent(7,2)", }, },
+	{ "Focusing Shot", { "modifier.rcontrol", "talent(7,2)", }, },
 
 
 
@@ -256,8 +256,9 @@ ProbablyEngine.rotation.register_custom(254, "Rotation Agent - Marksmanship (Sim
 			{ "Berserking", { "modifier.cooldowns", "target.deathin > 20", }, },
 
 			--actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25
-			{ "#76089", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.buff(Rapid Fire)", "player.spell(Stampede).cooldown < 1", }, },
-			{ "#76089", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "target.deathin <= 25", }, },
+			{ "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.buff(Rapid Fire)", "player.spell(Stampede).cooldown < 1", }, },
+			{ "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "@LibHunter.BurstHasteCheck()", "player.spell(Stampede).cooldown < 1", }, },
+			{ "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "target.deathin <= 25", }, },
 
 			--actions+=/chimaera_shot
 			{ "Chimaera Shot", { "!toggle.nocleave", }, },
