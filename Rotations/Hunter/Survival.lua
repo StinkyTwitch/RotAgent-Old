@@ -22,6 +22,31 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 
 
 
+--[[--------------------------------------------------------------------------------------------
+	SURVIVAL OPENER
+
+	----------------------------------------------------------------------------------------------]]
+	{{
+		{ "#trinket1", { "modifier.cooldowns", }, },
+		{ "#trinket2", { "modifier.cooldowns", }, },
+		{ "Blood Fury", { "modifier.cooldowns", }, },
+		{ "A Murder of Crows", { "modifier.cooldowns", }, },
+		{ "Black Arrow", },
+		{ "Arcane Shot", { "player.buff(Thrill of the Hunt)", "player.buff(Balanced Fate)", }, },
+		{ "Explosive Shot", { "!player.buff(Thrill of the Hunt)", }, },
+		{ "Arcane Shot", { "!target.debuff(Serpent Sting)", }, },
+		{ "Berserking", { "modifier.cooldowns", }, },
+	}, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
+
+
+
+
+
+
+
+
+
+
 	--[[--------------------------------------------------------------------------------------------
 	POOL FOCUS
 	  * Holding Left Control will cause the rotation to only cast Steady Shot to pool focus.
@@ -44,9 +69,10 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 
 	----------------------------------------------------------------------------------------------]]
 	{ "Freezing Trap", { "modifier.lcontrol", }, "mouseover.ground", },
-	{ "Multi-Shot", { "toggle.ss", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff(Serpent Sting)", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+	{ "Multi-Shot", { "toggle.ss", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff(Serpent Sting)", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
 	{ "Arcane Shot", { "toggle.ss", "!modifier.lcontrol", "!mouseover.debuff(Serpent Sting)", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
-	{ "Arcane Shot", { "toggle.ss", "modifier.lalt", "!mouseover.debuff(Serpent Sting)", }, "mouseover", },
+	{ "Multi-Shot", { "toggle.ss", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff(Serpent Sting)", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
+	{ "Arcane Shot", { "toggle.ss", "modifier.lalt", "!mouseover.debuff(Serpent Sting)", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
 
 
 
@@ -194,40 +220,6 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 		{ "Concussive Shot", { "target.moving", "!target.immune.snare", }, },
 		{ "Tranquilizing Shot", { "@LibHunter.TranqABuff()", }, },
 	}, "toggle.pvpmode", },
-
-
-
-
-
-
-
-
-
-
-	--[[--------------------------------------------------------------------------------------------
-	SURVIVAL OPENER
-
-	----------------------------------------------------------------------------------------------]]
-	{{
-		{ "#trinket1", { "modifier.cooldowns", }, },
-		{ "#trinket2", { "modifier.cooldowns", }, },
-		{ "Blood Fury", { "modifier.cooldowns", }, },
-		{ "A Murder of Crows", { "modifier.cooldowns", }, },
-		{ "Explosive Shot", { "!player.buff(Thrill of the Hunt)", }, },
-		{ "Arcane Shot", { "player.buff(Thrill of the Hunt)", "player.buff(Balanced Fate)", }, },
-		{ "Black Arrow", },
-		{ "Arcane Shot", { "!target.debuff(Serpent Sting)", }, },
-	}, {"@LibHunter.UseOpenerCheck('trivial', 3)", }, },
-
-
-
-
-
-
-
-
-
-
 
 
 
