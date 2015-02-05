@@ -12,7 +12,7 @@ Rotation Agent a rotation profile for Probably Engine
 * Will throw a Freezing Trap at your mouseover targets feet. This is useful while in combat so you don't inadvertently apply Serpent Sting to a unit that you want to CC.
 
 **right alt**
-This will cast Misdirection onto your current Focus target if you have one. If you do not have a Focus target it will not attempt to misdirect.
+* This will cast Misdirection onto your current Focus target if you have one. If you do not have a Focus target it will not attempt to misdirect.
 
 ##Version 0.1
 - Hunter only support in this initial version.
