@@ -5,8 +5,7 @@ Rotation Agent a rotation profile for Probably Engine
 **left shift**: Pause
 
 **left alt**
-
-Force Arcane Shot or Multi-Shot to apply Serpent Sting. This is useful as the routine will not automatically use Arcane Shot or Multi-Shot on Units that you are not in combat with.
+* Force Arcane Shot or Multi-Shot to apply Serpent Sting. This is useful as the routine will not automatically use Arcane Shot or Multi-Shot on Units that you are not in combat with.
 
 left control:
 right alt:
