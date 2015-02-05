@@ -501,7 +501,7 @@ function()
         'ShortCDs', 'Use short Cooldowns'
     )
 
-    BaseStats()
+    BaseStatsInit()
 
     C_Timer.NewTicker(0.1, (function()
         -- Out of Combat Timer Functions

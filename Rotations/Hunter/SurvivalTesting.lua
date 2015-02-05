@@ -347,6 +347,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival Testing"
 
 {
     { ooc, },
+    { misdirect }
     { spellqueue, },
 },
 
@@ -380,7 +381,7 @@ function()
         'Pet Management', 'Pet auto misdirect/attack/heal/revive'
     )
 
-    BaseStats()
+    BaseStatsInit()
 
     C_Timer.NewTicker(0.1, (function()
         -- Out of Combat Timer Functions
