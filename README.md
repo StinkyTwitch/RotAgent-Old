@@ -14,6 +14,6 @@ Rotation Agent a rotation profile for Probably Engine
 **right alt**
 This will cast Misdirection onto your current Focus target if you have one. If you do not have a Focus target it will not attempt to misdirect.
 
-Version 0.1
+##Version 0.1
 - Hunter only support in this initial version.
 - Check TODO.txt for a more detailed run down of version history.
