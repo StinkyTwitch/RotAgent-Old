@@ -676,11 +676,11 @@ function StatProcs(index)
     local index = index
     local current_stat = UnitStat("player", index)
 
-    if current_stat > BASESTATVALUE[index] then
-        DEBUG(5, "StatProcs(): TRUE ("..current_stat.." > "..BASESTATVALUE[index]..")")
+    if current_stat > BASESTATSVALUE[index] then
+        DEBUG(5, "StatProcs(): TRUE ("..current_stat.." > "..BASESTATSVALUE[index]..")")
         return true
     else
-        DEBUG(5, "StatProcs(): FALSE ("..current_stat.." < "..BASESTATVALUE[index]..")")
+        DEBUG(5, "StatProcs(): FALSE ("..current_stat.." < "..BASESTATSVALUE[index]..")")
         return false
     end
 end
