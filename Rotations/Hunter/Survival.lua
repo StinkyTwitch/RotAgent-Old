@@ -22,6 +22,55 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 
 
 
+	--[[--------------------------------------------------------------------------------------------
+	SPELL QUEUE
+
+	----------------------------------------------------------------------------------------------]]
+	{ "Explosive Trap", "@LibHunter.CheckHunterQueue(82939)", "mouseover.ground", "player.buff(Trap Launcher)", },
+	{ "Explosive Trap", "@LibHunter.CheckHunterQueue(13813)", "!player.buff(Trap Launcher)", },
+	{ "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "mouseover.ground", "player.buff(Trap Launcher)", },
+	{ "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "!player.buff(Trap Launcher)", },
+	{ "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "mouseover.ground", "player.buff(Trap Launcher)", },
+	{ "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "!player.buff(Trap Launcher)", },
+	{ "Binding Shot", "@LibHunter.CheckHunterQueue(109248)", "mouseover.ground", },
+	{ "Flare", "@LibHunter.CheckHunterQueue(1543)", "mouseover.ground", },
+
+	{ "A Murder of Crows", "@LibHunter.CheckHunterQueue(131894)", },
+	{ "Aspect of the Fox", "@LibHunter.CheckHunterQueue(172106)", },
+	{ "Barrage", "@LibHunter.CheckHunterQueue(120360)", },
+	{ "Camouflage", "@LibHunter.CheckHunterQueue(51753)", },
+	{ "Concussive Shot", "@LibHunter.CheckHunterQueue(5116)", },
+	{ "Counter Shot", "@LibHunter.CheckHunterQueue(147362)", },
+	{ "Deterrence", "@LibHunter.CheckHunterQueue(148467)", },
+	{ "Distracting Shot", "@LibHunter.CheckHunterQueue(20736)", },
+	{ "!Feign Death", "@LibHunter.CheckHunterQueue(5384)", },
+	{ "Flare", "@LibHunter.CheckHunterQueue(1543)", },
+	{ "Focusing Shot", "@LibHunter.CheckHunterQueue(152245)", },
+	{ "Glaive Toss", "@LibHunter.CheckHunterQueue(117050)", },
+	{ "Intimidation", "@LibHunter.CheckHunterQueue(19577)", },
+	{ "Master's Call", "@LibHunter.CheckHunterQueue(53271)", },
+	{ "Multi-Shot", "@LibHunter.CheckHunterQueue(2643)", },
+	{ "Powershot", "@LibHunter.CheckHunterQueue(109259)", },
+	{ "Stampede", "@LibHunter.CheckHunterQueue(121818)", },
+	{ "Tranquilizing Shot", "@LibHunter.CheckHunterQueue(19801)", },
+	{ "Wyvern Sting", "@LibHunter.CheckHunterQueue(19386)", },
+	{ "/stopcasting\n/stopcasting\n/hunterjump", { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
+	--{ "/stopcasting\n/stopcasting\n/hackintehunterjump", { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
+
+	--{ "", "@LibHunter.CheckHunterQueue()", },
+	{ "Arcane Shot", "@LibHunter.CheckHunterQueue(3044)", },
+	{ "Black Arrow", "@LibHunter.CheckHunterQueue(3674)", },
+	{ "Explosive Shot", "@LibHunter.CheckHunterQueue(53301)", },
+
+
+
+
+
+
+
+
+
+
 --[[--------------------------------------------------------------------------------------------
 	SURVIVAL OPENER
 
@@ -36,7 +85,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 		{ "Explosive Shot", { "!player.buff(Thrill of the Hunt)", }, },
 		{ "Arcane Shot", { "!target.debuff(Serpent Sting)", }, },
 		{ "Berserking", { "modifier.cooldowns", }, },
-	}, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
+	}, {"@LibHunter.UseOpenerCheck('worldboss', 4)", }, },
 
 
 
@@ -90,53 +139,6 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 	{{
 		{ "/cleartarget", { "@LibHunter.ClearCurrentTarget()", "!modifier.rcontrol" }, },
 	}, "toggle.autotarget", },
-
-
-
-
-
-
-
-
-
-	--[[--------------------------------------------------------------------------------------------
-	SPELL QUEUE
-
-	----------------------------------------------------------------------------------------------]]
-	{ "Explosive Trap", "@LibHunter.CheckHunterQueue(82939)", "mouseover.ground", "player.buff(Trap Launcher)", },
-	{ "Explosive Trap", "@LibHunter.CheckHunterQueue(13813)", "!player.buff(Trap Launcher)", },
-	{ "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "mouseover.ground", "player.buff(Trap Launcher)", },
-	{ "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "!player.buff(Trap Launcher)", },
-	{ "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "mouseover.ground", "player.buff(Trap Launcher)", },
-	{ "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "!player.buff(Trap Launcher)", },
-	{ "Binding Shot", "@LibHunter.CheckHunterQueue(109248)", "mouseover.ground", },
-	{ "Flare", "@LibHunter.CheckHunterQueue(1543)", "mouseover.ground", },
-
-	{ "A Murder of Crows", "@LibHunter.CheckHunterQueue(131894)", },
-	{ "Aspect of the Fox", "@LibHunter.CheckHunterQueue(172106)", },
-	{ "Barrage", "@LibHunter.CheckHunterQueue(120360)", },
-	{ "Camouflage", "@LibHunter.CheckHunterQueue(51753)", },
-	{ "Concussive Shot", "@LibHunter.CheckHunterQueue(5116)", },
-	{ "Counter Shot", "@LibHunter.CheckHunterQueue(147362)", },
-	{ "Deterrence", "@LibHunter.CheckHunterQueue(148467)", },
-	{ "Distracting Shot", "@LibHunter.CheckHunterQueue(20736)", },
-	{ "!Feign Death", "@LibHunter.CheckHunterQueue(5384)", },
-	{ "Flare", "@LibHunter.CheckHunterQueue(1543)", },
-	{ "Focusing Shot", "@LibHunter.CheckHunterQueue(152245)", },
-	{ "Glaive Toss", "@LibHunter.CheckHunterQueue(117050)", },
-	{ "Intimidation", "@LibHunter.CheckHunterQueue(19577)", },
-	{ "Master's Call", "@LibHunter.CheckHunterQueue(53271)", },
-	{ "Multi-Shot", "@LibHunter.CheckHunterQueue(2643)", },
-	{ "Powershot", "@LibHunter.CheckHunterQueue(109259)", },
-	{ "Stampede", "@LibHunter.CheckHunterQueue(121818)", },
-	{ "Tranquilizing Shot", "@LibHunter.CheckHunterQueue(19801)", },
-	{ "Wyvern Sting", "@LibHunter.CheckHunterQueue(19386)", },
-	{ "/stopcasting\n/stopcasting\n/hunterjump", { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
-
-	--{ "", "@LibHunter.CheckHunterQueue()", },
-	{ "Arcane Shot", "@LibHunter.CheckHunterQueue(3044)", },
-	{ "Black Arrow", "@LibHunter.CheckHunterQueue(3674)", },
-	{ "Explosive Shot", "@LibHunter.CheckHunterQueue(53301)", },
 
 
 
@@ -280,8 +282,8 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 				{ "Black Arrow", { "player.spell(Black Arrow).cooldown = 0", "target.deathin > 12", }, },
 
 				--actions.aoe+=/explosive_shot,if=active_enemies<5
-				{ "!Explosive Shot", { "player.buff(Lock and Load)", "!player.casting(Barrage)", "target.area(10).enemies <5", }, },
-				{ "Explosive Shot", { "player.focus > 15", "target.area(10).enemies <5", }, },
+				{ "!Explosive Shot", { "player.buff(Lock and Load)", "!player.casting(Barrage)", (function() return UnitsAroundUnit('target', 10) < 5 end), }, },
+				{ "Explosive Shot", { "player.focus > 15", (function() return UnitsAroundUnit('target', 10) < 5 end), }, },
 
 				--actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
 				{ "Explosive Trap", { "!toggle.nocleave", }, "target.ground", },
@@ -428,6 +430,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival (SimC)",
 	{ "Tranquilizing Shot", "@LibHunter.CheckHunterQueue(19801)", },
 	{ "Wyvern Sting", "@LibHunter.CheckHunterQueue(19386)", },
 	{ "/stopcasting\n/stopcasting\n/hunterjump", { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
+	--{ "/stopcasting\n/stopcasting\n/hackintehunterjump", { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
 
 	{ "Arcane Shot", "@LibHunter.CheckHunterQueue(3044)", },
 	{ "Black Arrow", "@LibHunter.CheckHunterQueue(3674)", },

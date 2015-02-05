@@ -23,6 +23,7 @@ LibHunter.SpecialTargetCheck = SpecialTargetCheck
 LibHunter.StatProcs = StatProcs
 LibHunter.TrinketsOnCooldown = TrinketsOnCooldown
 LibHunter.UnitsAroundUnit = UnitsAroundUnit
+LibHunter.UnitInRangeCheck = UnitInRangeCheck
 LibHunter.UnitToUnitDistanceCheck = UnitToUnitDistanceCheck
 LibHunter.UseOpenerCheck = UseOpenerCheck
 

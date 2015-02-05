@@ -121,6 +121,7 @@ SpecialTargets = {
     89078,      -- Training Dummy (Garrison)
     87318,      -- Dungeoneer's Training Dummy <Damage>
     -- WOD DUNGEONS/RAIDS
+    71075,      -- Small Illusionary Banshee (Proving Grounds)
     75966,      -- Defiled Spirit (Shadowmoon Burial Grounds)
     76220,      -- Blazing Trickster (Auchindoun Normal)
     76267,      -- Solar Zealot (Skyreach)
@@ -128,6 +129,9 @@ SpecialTargets = {
     79511,      -- Blazing Trickster (Auchindoun Heroic)
     81638,      -- Aqueous Globule (The Everbloom)
     153792,     -- Rallying Banner (UBRS Black Iron Grunt)
+    77252,      -- Ore Crate (BRF Oregorger)
+    79504,      -- Ore Crate (BRF Oregorger)
+    86644,      -- Ore Crate (BRF Oregorger)
 }
 
 
@@ -796,6 +800,36 @@ function UnitsAroundUnit(unit, distance, check_value)
         end
     end
 
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+UNIT IN RANGE CHECK
+
+--------------------------------------------------------------------------------------------------]]
+function UnitInRangeCheck(unit, distance_check)
+    local _, unit_exists = pcall(UnitExists, unit)
+    local _, can_attack = pcall(UnitCanAttack, "player", unit)
+    local _, unit_is_dead = pcall(UnitIsDead, unit)
+
+    if uunit_exists and can_attack and not unit_is_dead then
+        local _, x1, y1, z1 = pcall(ObjectPosition, "player")
+        local _, x2, y2, z2 = pcall(ObjectPosition, unit)
+
+        local dx = x2 - x1
+        local dy = y2 - y1
+        local dz = z2 - z1
+
+        local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
+
+        if distance < distance_check then
+            return true
+        else
+            return false
+        end
+    else
+        return false
+    end
 end
 
 
