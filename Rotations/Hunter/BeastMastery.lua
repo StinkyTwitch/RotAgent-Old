@@ -42,11 +42,11 @@ local spell = {
     Fireworks = "127933",
     --SnakeTrap = "",
     -- BEASTMASTERY
-    KillCommand = "",
-    FocusFire = "",
-    KillShot = "",
-    BestialWrath = "",
-    CobraShot = "",
+    BestialWrath = "19574",
+    CobraShot = "77767",
+    FocusFire = "82692",
+    KillCommand = "34026",
+    KillShot = "157708",
     -- TALENTS
     AMurderofCrows = "131894",
     Barrage = "120360",

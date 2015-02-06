@@ -42,10 +42,10 @@ local spell = {
     Fireworks = "127933",
     --SnakeTrap = "",
     -- MARKSMANSHIP
-    AimedShot = "",
-    KillShot = "",
-    RapidFire = "",
-    ChimaeraShot = "",
+    AimedShot = "19434",
+    ChimaeraShot = "53209",
+    KillShot = "157708",
+    RapidFire = "3045",
     -- TALENTS
     AMurderofCrows = "131894",
     Barrage = "120360",
