@@ -102,15 +102,15 @@ local mouseovers = {
     { spell.FreezingTrap1, { "!player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, },
     { spell.FreezingTrap2, { "player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, "mouseover.ground", },
     -- SERPENT STING (checks: No Debuff, Not Immune, Enemies Around Target)
-    { spell.MultiShot, { "toggle.ss", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
-    { spell.ArcaneShot, { "toggle.ss", "!modifier.lcontrol", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+    { spell.MultiShot, { "toggle.mouseovers", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
+    { spell.ArcaneShot, { "toggle.mouseovers", "!modifier.lcontrol", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
     -- FORCE SERPENT STING
-    { spell.MultiShot, { "toggle.ss", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
-    { spell.ArcaneShot, { "toggle.ss", "modifier.lalt", "!mouseover.debuff("..spell.SerpentSting..")", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+    { spell.MultiShot, { "toggle.mouseovers", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
+    { spell.ArcaneShot, { "toggle.mouseovers", "modifier.lalt", "!mouseover.debuff("..spell.SerpentSting..")", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
 }
 local misdirect = {
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "modifier.ralt", }, "focus", },
-    { spell.Misdirection, { "!focus.exists", "!mouseover.dead", "!mouseover.buff("..spell.Misdirection..")", "modifier.ralt", }, "mouseover", },
+    { spell.Misdirection, { "!focus.exists", "!mouseover.buff("..spell.Misdirection..")", "modifier.ralt", }, "mouseover", },
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "player.threat > 50", }, "focus", },
 }
 local ooc = {
@@ -248,7 +248,7 @@ local simc = {
     { spell.Trinket1, { "modifier.cooldowns", }, },
     { spell.Trinket2, { "modifier.cooldowns", }, },
     --actions+=/arcane_torrent,if=focus.deficit>=30
-    { spell.ArcaneShot, { "modifier.cooldowns", "target.deathin > 20", "player.focus <= 70", }, },
+    { spell.ArcaneTorrent, { "modifier.cooldowns", "target.deathin > 20", "player.focus <= 70", }, },
     --actions+=/blood_fury
     { spell.BloodFury, { "modifier.cooldowns", "target.deathin > 20", }, },
     --actions+=/berserking
@@ -307,7 +307,7 @@ local simc = {
         { spell.FocusingShot, { "target.deathin > 3", }, },
         --actions.aoe+=/cobra_shot
         { spell.CobraShot, { "target.deathin > 2", }, },
-    }, { "modifier.multitarget", "target.area(8).enemies > 1", }, },
+    }, { "modifier.multitarget", "target.area(10).enemies > 1", }, },
     --actions+=/stampede,if=buff.potion.up|(cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|
     --         trinket.stat.any.up))|
     --         target.time_to_die<=25
@@ -331,8 +331,8 @@ local simc = {
     { spell.ArcaneShot, { "target.debuff("..spell.SerpentSting..").duration <= 3", }, },
     { spell.ArcaneShot, { "target.deathin < 4.5", }, },
     --actions+=/explosive_trap
-    { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", }, },
-    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", }, "target.ground", },
+    { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", }, },
+    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", }, "target.ground", },
     --# Cast a second shot for steady focus if that won't cap us.
     --actions+=/cobra_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<5&(14+cast_regen)<=focus.deficit
     { spell.CobraShot, { "lastcast("..spell.CobraShot..")", "player.buff("..spell.SteadyFocus..") < 5", "@LibHunter.SimCSV14plusCSCRlessthanorequaltoFD()", }, },
@@ -370,7 +370,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
 
 {
     { ooc, },
-    { misdirect, },
+    { misdirect, { "toggle.md", }, },
     { spellqueue, },
 },
 

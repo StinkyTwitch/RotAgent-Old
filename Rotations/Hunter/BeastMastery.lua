@@ -80,6 +80,7 @@ local spell = {
     BalancedFate = "177038",
     Dazed = "15571",
     Food = "160598",
+    SerpentSting = "118253",
     SteadyFocus = "177668",
     ThrilloftheHunt = "34720",
 }
@@ -101,11 +102,11 @@ local mouseovers = {
     { spell.FreezingTrap1, { "!player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, },
     { spell.FreezingTrap2, { "player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, "mouseover.ground", },
     -- SERPENT STING (checks: No Debuff, Not Immune, Enemies Around Target)
-    { spell.MultiShot, { "toggle.ss", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
-    { spell.ArcaneShot, { "toggle.ss", "!modifier.lcontrol", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+    { spell.MultiShot, { "toggle.mouseovers", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
+    { spell.ArcaneShot, { "toggle.mouseovers", "!modifier.lcontrol", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
     -- FORCE SERPENT STING
-    { spell.MultiShot, { "toggle.ss", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
-    { spell.ArcaneShot, { "toggle.ss", "modifier.lalt", "!mouseover.debuff("..spell.SerpentSting..")", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+    { spell.MultiShot, { "toggle.mouseovers", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
+    { spell.ArcaneShot, { "toggle.mouseovers", "modifier.lalt", "!mouseover.debuff("..spell.SerpentSting..")", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
 }
 local misdirect = {
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "modifier.ralt", }, "focus", },

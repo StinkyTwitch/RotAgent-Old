@@ -151,7 +151,7 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
         elseif moretext == "barrage" then               -- ALL Talent
             LibHunter.QueueSpell = 120360
         elseif moretext == "beastial wrath" then        -- BM
-            LibHunter.QueueSpell == 19574
+            LibHunter.QueueSpell = 19574
         elseif moretext == "berserking" then            -- RACIAL
             LibHunter.QueueSpell = 26297
         elseif moretext == "binding shot" then          -- ALL Talent
