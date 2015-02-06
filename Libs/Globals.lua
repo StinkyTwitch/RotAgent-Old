@@ -259,7 +259,7 @@ end
 BASE STATS
 
 --------------------------------------------------------------------------------------------------]]
-function BaseStats()
+function BaseStatsInit()
     for i=1, 5 do
         BASESTATSVALUE[#BASESTATSVALUE+1] = UnitStat("player", i)
     end

@@ -150,6 +150,8 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
             LibHunter.QueueSpell = 80483
         elseif moretext == "barrage" then               -- ALL Talent
             LibHunter.QueueSpell = 120360
+        elseif moretext == "beastial wrath" then        -- BM
+            LibHunter.QueueSpell == 19574
         elseif moretext == "berserking" then            -- RACIAL
             LibHunter.QueueSpell = 26297
         elseif moretext == "binding shot" then          -- ALL Talent
@@ -162,6 +164,8 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
             LibHunter.QueueSpell = 51753
         elseif moretext == "chimaera shot" then         -- MM
             LibHunter.QueueSpell = 53209
+        elseif moretext == "cobra shot" then            -- BM
+            LibHunter.QueueSpell = 77767
         elseif moretext == "concussive shot" then       -- ALL
             LibHunter.QueueSpell = 5116
         elseif moretext == "counter shot" then          -- ALL
@@ -184,6 +188,8 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
             LibHunter.QueueSpell = 5384
         elseif moretext == "flare" then                 -- ALL
             LibHunter.QueueSpell = 1543
+        elseif moretext == "focus fire" then            -- BM
+            LibHunter.QueueSpell = 82692
         elseif moretext == "focusing shot" then         -- ALL Talent
             LibHunter.QueueSpell = 152245
         elseif moretext == "freezing trap" then         -- ALL
@@ -202,6 +208,8 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
             end
         elseif moretext == "intimidation" then          -- ALL Talent
             LibHunter.QueueSpell = 19577
+        elseif moretext == "kill command" then          -- BM
+            LibHunter.QueueSpell = 34026
         elseif moretext == "kill shot" then             -- MM
             LibHunter.QueueSpell = 157708
         elseif moretext == "masters call" then          -- ALL

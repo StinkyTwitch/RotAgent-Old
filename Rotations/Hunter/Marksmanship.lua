@@ -1,448 +1,258 @@
--- ProbablyEngine Rotation Packager
--- Created on Nov 1st 2014 8:14 pm
-ProbablyEngine.rotation.register_custom(254, "Rotation Agent - Marksmanship (SimC)",
--- COMBAT
-{
-    --[[--------------------------------------------------------------------------------------------
-    PAUSE
-      * Rotation will stop if Left Shift is held down, Feign Death is up or the player is eating or
-        is mounted. This will additionally recall your pet to prevent any outgoing DPS.
-    ----------------------------------------------------------------------------------------------]]
-    { "/stopcasting\n/stopcasting\n/stopattack\n/petfollow", { "@LibHunter.ImmuneTargetCheck('target')", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "modifier.lshift", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "lastcast(Feign Death)", }, },
-    { "/stopattack\n/petfollow", { "player.buff(Food)", }, },
 
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    POOL FOCUS
-      * Holding Left Control will cause the rotation to only cast Steady Shot to pool focus.
-      * Cast Steady Shot if Rapid Fire is coming off of Cooldown and we are not focus capped.
-    ----------------------------------------------------------------------------------------------]]
-    { "Steady Shot", { "modifier.rcontrol", "!talent(7,2)", }, },
-    { "Focusing Shot", { "modifier.rcontrol", "talent(7,2)", }, },
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    MAINTENANCE
-
-    ----------------------------------------------------------------------------------------------]]
-    { "/stopcasting\n/stopcasting", { "!player.buff(Thrill of the Hunt)", "player.focus < 50", "@LibHunter.CastingCheck('Aimed Shot')", }, },
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    AUTO CLEAR TARGET
-      * Automatically clears the target if it is friendly.
-    ----------------------------------------------------------------------------------------------]]
-    {{
-        { "/cleartarget", { "@LibHunter.ClearCurrentTarget()", "!modifier.rcontrol" }, },
-    }, "toggle.autotarget", },
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    SPELL QUEUE
-
-    ----------------------------------------------------------------------------------------------]]
-    { "Explosive Trap", "@LibHunter.CheckHunterQueue(82939)", "mouseover.ground", "player.buff(Trap Launcher)", },
-    { "Explosive Trap", "@LibHunter.CheckHunterQueue(13813)", "!player.buff(Trap Launcher)", },
-    { "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "mouseover.ground", "player.buff(Trap Launcher)", },
-    { "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "!player.buff(Trap Launcher)", },
-    { "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "mouseover.ground", "player.buff(Trap Launcher)", },
-    { "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "!player.buff(Trap Launcher)", },
-    { "Binding Shot", "@LibHunter.CheckHunterQueue(109248)", "mouseover.ground", },
-    { "Flare", "@LibHunter.CheckHunterQueue(1543)", "mouseover.ground", },
-
-    { "A Murder of Crows", "@LibHunter.CheckHunterQueue(131894)", },
-    { "Aspect of the Fox", "@LibHunter.CheckHunterQueue(172106)", },
-    { "Barrage", "@LibHunter.CheckHunterQueue(120360)", },
-    { "Camouflage", "@LibHunter.CheckHunterQueue(51753)", },
-    { "Concussive Shot", "@LibHunter.CheckHunterQueue(5116)", },
-    { "Counter Shot", "@LibHunter.CheckHunterQueue(147362)", },
-    { "Deterrence", "@LibHunter.CheckHunterQueue(148467)", },
-    { "Distracting Shot", "@LibHunter.CheckHunterQueue(20736)", },
-    { "!Feign Death", "@LibHunter.CheckHunterQueue(5384)", },
-    { "Flare", "@LibHunter.CheckHunterQueue(1543)", },
-    { "Focusing Shot", "@LibHunter.CheckHunterQueue(152245)", },
-    { "Glaive Toss", "@LibHunter.CheckHunterQueue(117050)", },
-    { "Intimidation", "@LibHunter.CheckHunterQueue(19577)", },
-    { "Master's Call", "@LibHunter.CheckHunterQueue(53271)", },
-    { "Multi-Shot", "@LibHunter.CheckHunterQueue(2643)", },
-    { "Powershot", "@LibHunter.CheckHunterQueue(109259)", },
-    { "Stampede", "@LibHunter.CheckHunterQueue(121818)", },
-    { "Tranquilizing Shot", "@LibHunter.CheckHunterQueue(19801)", },
-    { "Wyvern Sting", "@LibHunter.CheckHunterQueue(19386)", },
-    { "/stopcasting\n/stopcasting\n/hunterjump", { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
-
-    { "Aimed Shot", "@LibHunter.CheckHunterQueue(19434)", },
-    { "Chimaera Shot", "@LibHunter.CheckHunterQueue(53209)", },
-    { "Kill Shot", "@LibHunter.CheckHunterQueue(157708)", },
-    { "Rapid Fire", "@LibHunter.CheckHunterQueue(3045)", },
-    { "Steady Shot", "@LibHunter.CheckHunterQueue(56641)", },
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    MISDIRECTION
-
-    ----------------------------------------------------------------------------------------------]]
-    {{
-        { "Misdirection", { "pet.exists", "!pet.dead", "!pet.buff(Misdirection)", "!focus.exists", }, "pet", },
-        { "Misdirection", { "focus.exists", "!focus.dead", "!focus.buff(Misdirection)", "player.time < 5", }, "focus", },
-        { "Misdirection", { "focus.exists", "!focus.dead", "!focus.buff(Misdirection)", "player.threat > 75", }, "focus", },
-    }, "toggle.md", },
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    PET MANAGEMENT
-
-    ----------------------------------------------------------------------------------------------]]
-    {{
-        { "Heart of the Phoenix", { "!talent(7,3)", "pet.dead", }, },
-        { "Revive Pet", { "!talent(7,3)", "pet.dead", }, },
-        { "Mend Pet", { "pet.exists", "!pet.dead", "!pet.buff(Mend Pet)", "pet.health <= 90", }, "pet", },
-        { "/petattack", { "pet.exists", "timeout(petAttack, 1)", }, },
-        { "/cast Dash", { "pet.exists", "@LibHunter.UnitToUnitDistanceCheck('pet', 'target', 15)", "timeout(petDash, 2)", }, },
-    }, "toggle.petmgmt", },
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    DEFENSIVE ABILITIES/ITEMS
-
-    ----------------------------------------------------------------------------------------------]]
-    {{
-        { "#5512", { "player.health < 40", }, },
-        { "Deterrence", { "player.health < 10", }, },
-        { "Master's Call", { "pet.exists", "player.state.disorient", }, },
-        { "Master's Call", { "pet.exists", "player.state.stun", }, },
-        { "Master's Call", { "pet.exists", "player.state.root", }, },
-        { "Master's Call", { "pet.exists", "player.state.snare", "!player.debuff(Dazed)", }, },
-    }, "toggle.defensives", },
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    PVP MODE
-      * If target is moving use concussive shot
-      * Tranq Shot on any dispellable buff
-    ----------------------------------------------------------------------------------------------]]
-    {{
-        { "Concussive Shot", { "target.moving", "!target.immune.snare", }, },
-        { "Tranquilizing Shot", { "@LibHunter.TranqABuff()", }, },
-    }, "toggle.pvpmode", },
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    MARKSMANSHIP OPENER
-
-    ----------------------------------------------------------------------------------------------]]
-    {{
-        { "#trinket1", { "modifier.cooldowns", }, },
-        { "#trinket2", { "modifier.cooldowns", }, },
-        { "Blood Fury", { "modifier.cooldowns", }, },
-        { "Chimaera Shot", },
-        { "A Murder of Crows", { "modifier.cooldowns", }, },
-        { "Stampede", { "modifier.cooldowns", }, },
-        { "Rapid Fire", { "toggle.shortcds", }, },
-        { "Aimed Shot", },
-    }, {"@LibHunter.UseOpenerCheck('rareelite', 4)", }, },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    --[[--------------------------------------------------------------------------------------------
-    MAIN DAMAGE SECTION
-
-    ----------------------------------------------------------------------------------------------]]
-    {
-        {
-            --actions=auto_shot
-
-            --actions+=/use_items
-            { "#trinket1", { "modifier.cooldowns", }, },
-            { "#trinket2", { "modifier.cooldowns", }, },
-
-            --actions+=/arcane_torrent,if=focus.deficit>=30
-            { "Arcane Torrent", { "player.focus <= 90", "modifier.cooldowns", "target.deathin > 20", }, },
-
-            --actions+=/blood_fury
-            { "Blood Fury", { "modifier.cooldowns", "target.deathin > 20", }, },
-
-            --actions+=/berserking
-            { "Berserking", { "modifier.cooldowns", "target.deathin > 20", }, },
-
-            --actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25
-            { "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "player.buff(Rapid Fire)", "player.spell(Stampede).cooldown < 1", }, },
-            { "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "@LibHunter.BurstHasteCheck()", "player.spell(Stampede).cooldown < 1", }, },
-            { "#109217", { "toggle.consumables", "@LibHunter.EvalClassification('rareelite')", "target.deathin <= 25", }, },
-
-            --actions+=/chimaera_shot
-            { "Chimaera Shot", { "!toggle.nocleave", }, },
-
-            --actions+=/kill_shot
-            { "Kill Shot", },
-
-            --actions+=/rapid_fire
-            { "Rapid Fire", { "target.deathin >= 15", "toggle.shortcds", }, },
-
-            --actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=25
-            { "Stampede", { "modifier.cooldowns", "player.buff(Rapid Fire)", }, },
-            { "Stampede", { "modifier.cooldowns", "@LibHunter.BurstHasteCheck()", }, },
-            { "Stampede", { "modifier.cooldowns", "target.deathin <= 25", }, },
-
-            --actions+=/call_action_list,name=careful_aim,if=buff.careful_aim.up
-            {{
-                --actions.careful_aim=glaive_toss,if=active_enemies>2
-                { "Glaive Toss", { "@LibHunter.UnitsAroundUnit('target', 10, 2)", "!toggle.nocleave", }, },
-                --actions.careful_aim+=/powershot,if=active_enemies>1&cast_regen<focus.deficit
-                { "Powershot", { "@LibHunter.UnitsAroundUnit('target', 10, 1)", "@LibHunter.SimCMMPSCRlessthanFD()", "!toggle.nocleave", }, },
-                --actions.careful_aim+=/barrage,if=active_enemies>1
-                { "Barrage", { "@LibHunter.UnitsAroundUnit('target', 10, 1)", "!toggle.nocleave", }, },
-                --actions.careful_aim+=/aimed_shot
-                { "Aimed Shot", },
-                --actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
-                { "Focusing Shot", { "@LibHunter.SimCMM50FSCRlessthanFD()", }, },
-                --actions.careful_aim+=/steady_shot
-                { "Steady Shot", },
-            }, { "@LibHunter.CarefulAimCheck('rareelite')", }, },
-
-            --actions+=/explosive_trap,if=active_enemies>1
-            { "Explosive Trap", { "@LibHunter.UnitsAroundUnit('target', 10, 1)", "!toggle.nocleave", }, "target.ground", },
-
-            --actions+=/a_murder_of_crows
-            { "A Murder of Crows", { "target.deathin > 60", "toggle.shortcds", }, },
-            { "A Murder of Crows", { "target.deathin < 12", }, },
-
-            --actions+=/dire_beast,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
-            { "Dire Beast", { "@LibHunter.SimCMMDBCRplusASCRlessthanFD()", }, },
-
-            --actions+=/glaive_toss
-            { "Glaive Toss", { "!toggle.nocleave", }, },
-
-            --actions+=/powershot,if=cast_regen<focus.deficit
-            { "Powershot", { "@LibHunter.SimCMMPSCRlessthanFD()", "!toggle.nocleave", }, },
-
-            --actions+=/barrage
-            { "Barrage", { "!toggle.nocleave", }, },
-
-            --# Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff
-            --actions+=/steady_shot,if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains
-            { "Steady Shot", { "@LibHunter.SimCMMFDtimesSSCTdividedby14plusSSCRgreatherthanRFCD()", }, },
-
-            --actions+=/focusing_shot,if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100
-            { "Focusing Shot", { "@LibHunter.SimCMMFDtimesFSCTdividedby50plusFSCRgreatherthanRFCD()", "player.focus < 100", }, },
-
-            --# Cast a second shot for steady focus if that won't cap us.
-            --actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
-            { "Steady Shot", { "talent(4,1)", "lastcast(Steady Shot)", "@LibHunter.SimCMM14plusSSCRplusASCRlessthanorequaltoFD()", }, },
-
-            --actions+=/multishot,if=active_enemies>6
-            { "Multi-Shot", { "modifier.multitarget", "@LibHunter.UnitsAroundUnit('target', 10, 6)", "!toggle.nocleave", }, },
-
-            --actions+=/aimed_shot,if=talent.focusing_shot.enabled
-            { "Aimed Shot", { "talent(7,2)", }, },
-
-            --actions+=/aimed_shot,if=focus+cast_regen>=85
-            { "Aimed Shot", { "@LibHunter.SimCMMFplusASCRgreaterthanorequalto85()", }, },
-
-            --actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
-            { "Aimed Shot", { "player.buff(Thrill of the Hunt)", "@LibHunter.SimCMMFplusASCRgreaterthanorequalto65()", }, },
-
-            --# Allow FS to over-cap by 10 if we have nothing else to do
-            --actions+=/focusing_shot,if=50+cast_regen-10<focus.deficit
-            { "Focusing Shot", { "@LibHunter.SimCMM50plusFSCRminus10lessthanFD()", }, },
-
-            --actions+=/steady_shot
-            { "Steady Shot", },
-
-        }, { "target.alive", },
-    },
-},
-
-
-
-
-
--- OUT OF COMBAT
-{
+local spell = {
+    -- CORE
+    ArcaneShot = "3044",
+    AspectoftheCheetah = "5118",
+    AspectoftheFox = "172106",
+    AspectofthePack = "13159",
+    AutoShot = "75",
+    CallPet1 = "883",
+    CallPet2 = "83242",
+    CallPet3 = "83243",
+    CallPet4 = "83244",
+    CallPet5 = "83245",
+    Camouflage = "51753",
+    Deterrence = "148467",
+    ConcussiveShot = "5116",
+    CounterShot = "147362",
+    DismissPet = "2641",
+    Disengage = "781",
+    DistractingShot = "20736",
+    EagleEye = "6197",
+    ExplosiveTrap1 = "13813",
+    ExplosiveTrap2 = "82939",
+    FeedPet = "6991",
+    FeignDeath = "5384",
+    FeignDeathNow = "!5384",
+    Flare = "1543",
+    FreezingTrap1 = "1499",
+    FreezingTrap2 = "60192",
+    HeartOfThePhoenix = "55709",
+    IceTrap1 = "13809",
+    IceTrap2 = "82941",
+    MastersCall = "53271",
+    MendPet = "136",
+    Misdirection = "34477",
+    MultiShot = "2643",
+    RevivePet = "982",
+    TrapLauncher = "77769",
+    TranquilizingShot = "19801",
+    -- GLYPHS
+    Fetch = "125050",
+    Fireworks = "127933",
+    --SnakeTrap = "",
+    -- MARKSMANSHIP
+    AimedShot = "",
+    KillShot = "",
+    RapidFire = "",
+    ChimaeraShot = "",
+    -- TALENTS
+    AMurderofCrows = "131894",
+    Barrage = "120360",
+    BindingShot  = "109248",
+    DireBeast = "120679",
+    Exhilaration = "109304",
+    FocusingShot = "152245",
+    GlaiveToss = "117050",
+    Intimidation = "19577",
+    Powershot = "109259",
+    Stampede = "121818",
+    WyvernSting = "19386",
+    -- RACIALS
+    ArcaneTorrent = "80483",
+    BloodFury = "20572",
+    Berserking = "26297",
+    -- OBJECTS
+    AgilityPotion = "#109217",
+    HealthStone = "#5512",
+    Trinket1 = "#trinket1",
+    Trinket2 = "#trinket2",
+    -- MACROS
+    HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
+    Pause = "/stopcasting\n/stopcasting\n/stopattack",
+    PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
+    PetAttack = "/petattack",
+    PetDash = "/cast Dash",
+    -- BUFFS
+    ArchmagesIncandescence = "177161",
+    ArchmagesGreaterIncandescence = "177172",
+    BalancedFate = "177038",
+    Dazed = "15571",
+    Food = "160598",
+    SteadyFocus = "177668",
+    ThrilloftheHunt = "34720",
+}
+local defensive = {
+    { spell.HealthStone, { "player.health < 40", }, },
+    { spell.Deterrence, { "player.health <= 10", }, },
+    { spell.Exhilaration, { "player.health < 50", }, },
+    { spell.MastersCall, { "pet.exists", "player.state.disorient", }, },
+    { spell.MastersCall, { "pet.exists", "player.state.stun", }, },
+    { spell.MastersCall, { "pet.exists", "player.state.root", }, },
+    { spell.MastersCall, { "pet.exists", "player.state.snare", "!player.debuff("..spell.Dazed..")", }, },
+}
+local interrupts = {
+    { spell.CounterShot, { "target.interruptAt(50)", "modifier.interrupts" }, "target", },
+    { spell.Intimidation, { "target.interruptAt(50)", "modifier.interrupts" }, "target", },
+}
+local mouseovers = {
+    -- CC TRAP
+    { spell.FreezingTrap1, { "!player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, },
+    { spell.FreezingTrap2, { "player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, "mouseover.ground", },
+    -- SERPENT STING (checks: No Debuff, Not Immune, Enemies Around Target)
+    { spell.MultiShot, { "toggle.ss", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
+    { spell.ArcaneShot, { "toggle.ss", "!modifier.lcontrol", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+    -- FORCE SERPENT STING
+    { spell.MultiShot, { "toggle.ss", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
+    { spell.ArcaneShot, { "toggle.ss", "modifier.lalt", "!mouseover.debuff("..spell.SerpentSting..")", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
+}
+local misdirect = {
+    { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "modifier.ralt", }, "focus", },
+    { spell.Misdirection, { "!focus.exists", "!mouseover.dead", "!mouseover.buff("..spell.Misdirection..")", "modifier.ralt", }, "mouseover", },
+    { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "player.threat > 50", }, "focus", },
+}
+local ooc = {
     { "pause", { "modifier.lshift", }, },
-    { "pause", "player.buff(Feign Death)", },
-    { "pause", "player.buff(Food)", },
+    { "pause", "player.buff("..spell.FeignDeath..")", },
+    { "pause", "player.buff("..spell.Food..")", },
 
-    { "Dismiss Pet", { "pet.exists", "talent(7,3)", }, },
-    { "Revive Pet", { "pet.dead", "!talent(7,3)", }, },
+    { spell.DismissPet, { "pet.exists", "talent(7,3)", }, },
+    { spell.RevivePet, { "pet.dead", "!talent(7,3)", }, },
 
-    { "Explosive Trap", "@LibHunter.CheckHunterQueue(82939)", "mouseover.ground", "player.buff(Trap Launcher)", },
-    { "Explosive Trap", "@LibHunter.CheckHunterQueue(13813)", "!player.buff(Trap Launcher)", },
-    { "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "mouseover.ground", "player.buff(Trap Launcher)", },
-    { "Freezing Trap", "@LibHunter.CheckHunterQueue(60192)", "!player.buff(Trap Launcher)", },
-    { "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "mouseover.ground", "player.buff(Trap Launcher)", },
-    { "Ice Trap", "@LibHunter.CheckHunterQueue(82941)", "!player.buff(Trap Launcher)", },
-    { "Binding Shot", "@LibHunter.CheckHunterQueue(109248)", "mouseover.ground", },
-    { "Flare", "@LibHunter.CheckHunterQueue(1543)", "mouseover.ground", },
+    { spell.Fetch, { "modifier.lcontrol", "!lastcast("..spell.Fetch..")", "!player.moving", "pet.exists", "timeout(timerFetch, 1)", }, },
+    { spell.TrapLauncher, { "!player.buff("..spell.TrapLauncher..")", }, },
+}
+local pause = {
+    -- IMMUNE TARGET
+    { spell.PauseIncPet, { "pet.exists", "@LibHunter.ImmuneTargetCheck(1, 'target')", }, },
+    { spell.Pause, { "!pet.exists", "@LibHunter.ImmuneTargetCheck(1, 'target')", }, },
+    -- LEFT SHIFT PAUSE ROTATION
+    { spell.PauseIncPet, { "pet.exists", "modifier.lshift", }, },
+    { spell.Pause, { "!pet.exists", "modifier.lshift", }, },
+    -- FEIGN DEATH PAUSE ROTATION
+    { spell.PauseIncPet, { "pet.exists", "lastcast("..spell.FeignDeath..")", }, },
+    { spell.Pause, { "!pet.exists", "lastcast("..spell.FeignDeath.." )", }, },
+    -- PLAYER EATING/DRINKING PAUSE ROTATION
+    { spell.PauseIncPet, { "player.buff("..spell.Food..")", }, },
+}
+local petmanagement = {
+    { spell.Misdirection, { "pet.exists", "!pet.dead", "!pet.buff("..spell.Misdirection..")", "!focus.exists", }, "pet", },
+    { spell.HeartOfThePhoenix, { "!talent(7,3)", "pet.dead", }, },
+    { spell.RevivePet, { "!talent(7,3)", "pet.dead", }, },
+    { spell.MendPet, { "pet.exists", "!pet.dead", "!pet.buff("..spell.MendPet..")", "pet.health <= 90", }, "pet", },
+    { spell.PetAttack, { "pet.exists", "timeout(petAttack, 1)", }, },
+    { spell.PetDash, { "pet.exists", "@LibHunter.UnitToUnitDistanceCheck('pet', 'target', 15)", "timeout(petDash, 2)", }, },
+}
+local poolfocus = {
+    { spell.CobraShot, { "modifier.rcontrol", "!talent(7,2)", }, },
+    { spell.FocusingShot, { "modifier.rcontrol", "talent(7,2)", }, },
+}
+local pvp = {
+    { spell.ConcussiveShot, { "target.moving", "!target.immune.snare", }, },
+    { spell.TranquilizingShot, { "target.dispellable("..spell.TranquilizingShot..")", }, },
+}
+local spellqueue = {
+    -- HUNTER TRAPS/GROUND SPELLS
+    { spell.ExplosiveTrap1, { "@LibHunter.CheckHunterQueue(13813)", "!player.buff("..spell.TrapLauncher..")", }, },
+    { spell.ExplosiveTrap2, { "@LibHunter.CheckHunterQueue(82939)", "player.buff("..spell.TrapLauncher..")", }, "mouseover.ground", },
+    { spell.FreezingTrap1, { "@LibHunter.CheckHunterQueue(60192)", "!player.buff("..spell.TrapLauncher..")", }, },
+    { spell.FreezingTrap2, { "@LibHunter.CheckHunterQueue(60192)", "player.buff("..spell.TrapLauncher..")", }, "mouseover.ground", },
+    { spell.IceTrap1, { "@LibHunter.CheckHunterQueue(82941)", "!player.buff("..spell.TrapLauncher..")", }, },
+    { spell.IceTrap2, { "@LibHunter.CheckHunterQueue(82941)", "player.buff("..spell.TrapLauncher..")", }, "mouseover.ground", },
+    { spell.BindingShot, "@LibHunter.CheckHunterQueue(109248)", "mouseover.ground", },
+    { spell.Flare, "@LibHunter.CheckHunterQueue(1543)", "mouseover.ground", },
+    -- HUNTER GENERAL
+    { spell.AMurderofCrows, "@LibHunter.CheckHunterQueue(131894)", },
+    { spell.ArcaneShot, "@LibHunter.CheckHunterQueue(3044)", },
+    { spell.AspectoftheFox, "@LibHunter.CheckHunterQueue(172106)", },
+    { spell.Barrage, "@LibHunter.CheckHunterQueue(120360)", },
+    { spell.Camouflage, "@LibHunter.CheckHunterQueue(51753)", },
+    { spell.ConcussiveShot, "@LibHunter.CheckHunterQueue(5116)", },
+    { spell.CounterShot, "@LibHunter.CheckHunterQueue(147362)", },
+    { spell.Deterrence, "@LibHunter.CheckHunterQueue(148467)", },
+    { spell.DistractingShot, "@LibHunter.CheckHunterQueue(20736)", },
+    { spell.FeignDeathNow, "@LibHunter.CheckHunterQueue(5384)", },
+    { spell.Flare, "@LibHunter.CheckHunterQueue(1543)", },
+    { spell.FocusingShot, "@LibHunter.CheckHunterQueue(152245)", },
+    { spell.GlaiveToss, "@LibHunter.CheckHunterQueue(117050)", },
+    { spell.Intimidation, "@LibHunter.CheckHunterQueue(19577)", },
+    { spell.MastersCall, "@LibHunter.CheckHunterQueue(53271)", },
+    { spell.MultiShot, "@LibHunter.CheckHunterQueue(2643)", },
+    { spell.Powershot, "@LibHunter.CheckHunterQueue(109259)", },
+    { spell.Stampede, "@LibHunter.CheckHunterQueue(121818)", },
+    { spell.TranquilizingShot, "@LibHunter.CheckHunterQueue(19801)", },
+    { spell.WyvernSting, "@LibHunter.CheckHunterQueue(19386)", },
+    { spell.HunterJump, { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
+    -- HUNTER MARKSMANSHIP
+    { spell.AimedShot, "@LibHunter.CheckHunterQueue(19434)", },
+    { spell.ChimaeraShot, "@LibHunter.CheckHunterQueue(53209)", },
+    { spell.KillShot, "@LibHunter.CheckHunterQueue(157708)", },
+    { spell.RapidFire, "@LibHunter.CheckHunterQueue(3045)", },
+}
 
-    { "A Murder of Crows", "@LibHunter.CheckHunterQueue(131894)", },
-    { "Aspect of the Fox", "@LibHunter.CheckHunterQueue(172106)", },
-    { "Barrage", "@LibHunter.CheckHunterQueue(120360)", },
-    { "Camouflage", "@LibHunter.CheckHunterQueue(51753)", },
-    { "Concussive Shot", "@LibHunter.CheckHunterQueue(5116)", },
-    { "Counter Shot", "@LibHunter.CheckHunterQueue(147362)", },
-    { "Deterrence", "@LibHunter.CheckHunterQueue(148467)", },
-    { "Distracting Shot", "@LibHunter.CheckHunterQueue(20736)", },
-    { "!Feign Death", "@LibHunter.CheckHunterQueue(5384)", },
-    { "Flare", "@LibHunter.CheckHunterQueue(1543)", },
-    { "Focusing Shot", "@LibHunter.CheckHunterQueue(152245)", },
-    { "Glaive Toss", "@LibHunter.CheckHunterQueue(117050)", },
-    { "Intimidation", "@LibHunter.CheckHunterQueue(19577)", },
-    { "Master's Call", "@LibHunter.CheckHunterQueue(53271)", },
-    { "Multi-Shot", "@LibHunter.CheckHunterQueue(2643)", },
-    { "Powershot", "@LibHunter.CheckHunterQueue(109259)", },
-    { "Stampede", "@LibHunter.CheckHunterQueue(121818)", },
-    { "Tranquilizing Shot", "@LibHunter.CheckHunterQueue(19801)", },
-    { "Wyvern Sting", "@LibHunter.CheckHunterQueue(19386)", },
-    { "/stopcasting\n/stopcasting\n/hunterjump", { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
+local opener = {
+}
+local simc = {
+}
 
-    { "Aimed Shot", "@LibHunter.CheckHunterQueue(19434)", },
-    { "Chimaera Shot", "@LibHunter.CheckHunterQueue(53209)", },
-    { "Kill Shot", "@LibHunter.CheckHunterQueue(157708)", },
-    { "Rapid Fire", "@LibHunter.CheckHunterQueue(3045)", },
-    { "Steady Shot", "@LibHunter.CheckHunterQueue(56641)", },
+ProbablyEngine.rotation.register_custom(254, "Rotation Agent - Marksmanship",
+{
+    { "/stopcasting\n/stopcasting\n/stopattack\n/petfollow", { "@LibHunter.ImmuneTargetCheck(2, 'target')", }, },
+    { "/stopcasting\n/stopattack\n/petfollow", { "modifier.lshift", }, },
+    { "/stopcasting\n/stopattack\n/petfollow", { "lastcast("..spell.FeignDeath..")", }, },
+    { "/stopattack\n/petfollow", { "player.buff("..spell.Food..")", }, },
 
-    { "Camouflage", { "toggle.pvpmode", "player.glyph(Glyph of Camouflage)", "!player.buff(Camouflage)", "!player.debuff(Orb of Power)", }, },
-    { "Fetch", { "modifier.lcontrol", "!lastcast(Fetch)", "!player.moving", "pet.exists", "timeout(timerFetch, 1)", }, },
-    { "Trap Launcher", { "!player.buff(Trap Launcher)", }, },
+    { opener, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
+
+    { poolfocus, },
+    { spellqueue, },
+    { petmanagement, { "toggle.petmgmt", }, },
+    { defensive, { "toggle.defensives", }, },
+    { interrupts, { "modifier.interrupts", }, },
+    { misdirect, { "toggle.md", }, },
+    { pvp, },
+
+    { simc, },
 },
 
+{
+    { ooc, },
+    { misdirect, },
+    { spellqueue, },
+},
 
-
-
-
--- CUSTOM CODE RUN ONCE
 function()
     ProbablyEngine.toggle.create(
-        'autotarget',
-        'Interface\\Icons\\ability_hunter_snipershot',
-        'Auto Target',
-        'Automatically target the nearest enemy when target dies or does not exist'
+        'autotarget', 'Interface\\Icons\\ability_hunter_snipershot',
+        'Auto Target', 'Automatically target the nearest enemy when target dies or does not exist'
     )
     ProbablyEngine.toggle.create(
-        'consumables',
-        'Interface\\Icons\\inv_alchemy_endlessflask_06',
+        'consumables', 'Interface\\Icons\\inv_alchemy_endlessflask_06',
         'Use Consumables', 'Toggle the usage of Flasks/Food/Potions etc..'
     )
     ProbablyEngine.toggle.create(
-        'defensives',
-        'Interface\\Icons\\Ability_warrior_defensivestance',
+        'defensives', 'Interface\\Icons\\Ability_warrior_defensivestance',
         'Defensive Abilities', 'Toggle the usage of defensive abilities.'
     )
     ProbablyEngine.toggle.create(
-        'md',
-        'Interface\\Icons\\ability_hunter_misdirection',
+        'md', 'Interface\\Icons\\ability_hunter_misdirection',
         'Misdirect', 'Auto Misdirect to Focus or Pet'
     )
     ProbablyEngine.toggle.create(
-        'nocleave',
-        'Interface\\Icons\\Warrior_talent_icon_mastercleaver',
+        'mouseovers', 'Interface\\Icons\\ability_hunter_quickshot',
+        'Mouseover Serpent Sting', 'Automatically apply Arcane Shot/Multi-Shot to mouseover units while in combat'
+    )
+    ProbablyEngine.toggle.create(
+        'nocleave', 'Interface\\Icons\\Warrior_talent_icon_mastercleaver',
         'No Cleave', 'Do not use any cleave/aoe abilities'
     )
     ProbablyEngine.toggle.create(
-        'petmgmt',
-        'Interface\\Icons\\Ability_hunter_beasttraining',
-        'Pet Management', 'Pet auto Attack/Heal/Revive'
+        'petmgmt', 'Interface\\Icons\\Ability_hunter_beasttraining',
+        'Pet Management', 'Pet auto misdirect/attack/heal/revive'
     )
     ProbablyEngine.toggle.create(
-        'pvpmode',
-        'Interface\\Icons\\Trade_archaeology_troll_voodoodoll',
-        'Enable PvP', 'Toggle the usage of PvP abilities'
-    )
-    ProbablyEngine.toggle.create(
-        'shortcds',
-        'Interface\\Icons\\Achievement_bg_grab_cap_flagunderxseconds',
-        'ShortCDs', 'Use short Cooldowns'
+        'pvp', 'Interface\\Icons\\Trade_archaeology_troll_voodoodoll',
+        'PvP Logic', 'Toggle the usage of basic PvP abilities'
     )
 
     BaseStatsInit()

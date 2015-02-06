@@ -15,4 +15,3 @@ Libs\LibHunter.lua
 Rotations\Hunter\BeastMastery.lua
 Rotations\Hunter\Marksmanship.lua
 Rotations\Hunter\Survival.lua
-Rotations\Hunter\SurvivalTesting.lua
