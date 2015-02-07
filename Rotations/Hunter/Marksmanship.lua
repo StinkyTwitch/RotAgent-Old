@@ -239,11 +239,11 @@ local simc = {
     --actions+=/call_action_list,name=careful_aim,if=buff.careful_aim.up
     --{
         --actions.careful_aim=glaive_toss,if=active_enemies>2
-        { spell.GlaiveToss, { EnemyInArea_10_2, "modifier.multitarget", "!toggle.nocleave", }, },
+        { spell.GlaiveToss, { string.EnemyInArea_10_2, "modifier.multitarget", "!toggle.nocleave", }, },
         --actions.careful_aim+=/powershot,if=active_enemies>1&cast_regen<focus.deficit
-        { spell.Powershot, { EnemyInArea_10_1, "@LibHunter.SimCMMPSCRlessthanFD()", "modifier.multitarget", "!toggle.nocleave", }, },
+        { spell.Powershot, { string.EnemyInArea_10_1, "@LibHunter.SimCMMPSCRlessthanFD()", "modifier.multitarget", "!toggle.nocleave", }, },
         --actions.careful_aim+=/barrage,if=active_enemies>1
-        { spell.Barrage, { EnemyInArea_10_1, "modifier.multitarget", "!toggle.nocleave", }, },
+        { spell.Barrage, { string.EnemyInArea_10_1, "modifier.multitarget", "!toggle.nocleave", }, },
         --actions.careful_aim+=/aimed_shot
         { spell.AimedShot, },
         --actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
@@ -252,8 +252,8 @@ local simc = {
         { spell.SteadyShot, },
     --}, "@LibHunter.CarefulAimCheck('rareelite')", },
     --actions+=/explosive_trap,if=active_enemies>1
-    { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", EnemyInArea_10_1, }, },
-    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", EnemyInArea_10_1, }, "target.ground", },
+    { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", string.EnemyInArea_10_1, }, },
+    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", string.EnemyInArea_10_1, }, "target.ground", },
     --actions+=/a_murder_of_crows
     { spell.AMurderofCrows, { "target.deathin > 60", "modifier.cooldowns", }, },
     { spell.AMurderofCrows, { "target.deathin < 12", }, },
@@ -272,7 +272,7 @@ local simc = {
     --actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
     { spell.SteadyShot, { "lastcast("..spell.SteadyShot..")", "talent(4,1)", "@LibHunter.SimCMM14plusSSCRplusASCRlessthanorequaltoFD()", }, },
     --actions+=/multishot,if=active_enemies>6
-    { spell.MultiShot, { EnemyInArea_10_6, "modifier.multitarget", "!toggle.nocleave", }, },
+    { spell.MultiShot, { string.EnemyInArea_10_6, "modifier.multitarget", "!toggle.nocleave", }, },
     --actions+=/aimed_shot,if=talent.focusing_shot.enabled
     { spell.AimedShot, { "talent(7,2)", }, },
     --actions+=/aimed_shot,if=focus+cast_regen>=85
