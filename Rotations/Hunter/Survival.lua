@@ -35,6 +35,7 @@ local spell = {
     Misdirection = "34477",
     MultiShot = "2643",
     RevivePet = "982",
+    SteadyShot = "56641",
     TrapLauncher = "77769",
     TranquilizingShot = "19801",
     -- GLYPHS
@@ -83,6 +84,14 @@ local spell = {
     SerpentSting = "118253",
     SteadyFocus = "177668",
     ThrilloftheHunt = "34720",
+}
+local string = {
+    -- MACROS
+    HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
+    Pause = "/stopcasting\n/stopcasting\n/stopattack",
+    PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
+    PetAttack = "/petattack",
+    PetDash = "/cast Dash",
 }
 local defensive = {
     { spell.HealthStone, { "player.health < 40", }, },
@@ -347,10 +356,10 @@ local simc = {
 
 ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
 {
-    { "/stopcasting\n/stopcasting\n/stopattack\n/petfollow", { "@LibHunter.ImmuneTargetCheck(2, 'target')", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "modifier.lshift", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "lastcast("..spell.FeignDeath..")", }, },
-    { "/stopattack\n/petfollow", { "player.buff("..spell.Food..")", }, },
+    { string.PauseIncPet, { "@LibHunter.ImmuneTargetCheck(2, 'target')", }, },
+    { string.PauseIncPet, { "modifier.lshift", }, },
+    { string.PauseIncPet, { "lastcast("..spell.FeignDeath..")", }, },
+    { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 
     { opener, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
 

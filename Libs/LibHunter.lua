@@ -559,7 +559,7 @@ SimC MM Focus + Aimed Shot Cast Regen >= 65
 
 --------------------------------------------------------------------------------------------------]]
 function LibHunter.SimCMMFplusASCRgreaterthanorequalto65()
-    --factions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
+    --actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
     local focus_check       = 65
     local focus_current     = UnitPower("player")
     local spell_haste       = UnitSpellHaste("player")
@@ -734,10 +734,10 @@ function LibHunter.CarefulAimCheck(check_value)
         local rapid_fire_active = (math.abs(rapid_fire_start - GetTime()))
 
         if UnitBuff("player", "Rapid Fire") then
-            DEBUG(1, "Rapid Fire Active:"..rapid_fire_active.."")
+            DEBUG(1, "Using Careful Aim rotation (Rapid Fire up)!"..rapid_fire_active.."")
             return true
         elseif (check_target >= check_value) and target_health > 80 then
-            DEBUG(1, "Careful Aim Active:"..combat_time.."")
+            DEBUG(1, "Using Careful Aim rotation (Target health > 80)!"..combat_time.."")
             return true
         else
             DEBUG(5, "Rapid Fire and/or Careful Aim not active")

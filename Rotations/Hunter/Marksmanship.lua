@@ -35,6 +35,7 @@ local spell = {
     Misdirection = "34477",
     MultiShot = "2643",
     RevivePet = "982",
+    SteadyShot = "56641",
     TrapLauncher = "77769",
     TranquilizingShot = "19801",
     -- GLYPHS
@@ -83,6 +84,20 @@ local spell = {
     SteadyFocus = "177668",
     ThrilloftheHunt = "34720",
 }
+local string = {
+    -- MACROS
+    HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
+    Pause = "/stopcasting\n/stopcasting\n/stopattack",
+    PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
+    PetAttack = "/petattack",
+    PetDash = "/cast Dash",
+    --EnemyInArea_10_1 = "target.area(10).enemies > 1",
+    EnemyInArea_10_1 = "@LibHunter.UnitsAroundUnit('target', 10, 1)",
+    --EnemyInArea_10_2 = "target.area(10).enemies > 2",
+    EnemyInArea_10_2 = "@LibHunter.UnitsAroundUnit('target', 10, 2)",
+    --EnemyInArea_10_6 = "target.area(10).enemies > 6",
+    EnemyInArea_10_6 = "@LibHunter.UnitsAroundUnit('target', 10, 6)",
+}
 local defensive = {
     { spell.HealthStone, { "player.health < 40", }, },
     { spell.Deterrence, { "player.health <= 10", }, },
@@ -95,17 +110,6 @@ local defensive = {
 local interrupts = {
     { spell.CounterShot, { "target.interruptAt(50)", "modifier.interrupts" }, "target", },
     { spell.Intimidation, { "target.interruptAt(50)", "modifier.interrupts" }, "target", },
-}
-local mouseovers = {
-    -- CC TRAP
-    { spell.FreezingTrap1, { "!player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, },
-    { spell.FreezingTrap2, { "player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, "mouseover.ground", },
-    -- SERPENT STING (checks: No Debuff, Not Immune, Enemies Around Target)
-    { spell.MultiShot, { "toggle.mouseovers", "!modifier.lcontrol", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
-    { spell.ArcaneShot, { "toggle.mouseovers", "!modifier.lcontrol", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.NotImmuneTargetCheck(2, 'mouseover')", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
-    -- FORCE SERPENT STING
-    { spell.MultiShot, { "toggle.mouseovers", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
-    { spell.ArcaneShot, { "toggle.mouseovers", "modifier.lalt", "!mouseover.debuff("..spell.SerpentSting..")", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
 }
 local misdirect = {
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "modifier.ralt", }, "focus", },
@@ -145,7 +149,7 @@ local petmanagement = {
     { spell.PetDash, { "pet.exists", "@LibHunter.UnitToUnitDistanceCheck('pet', 'target', 15)", "timeout(petDash, 2)", }, },
 }
 local poolfocus = {
-    { spell.CobraShot, { "modifier.rcontrol", "!talent(7,2)", }, },
+    { spell.SteadyShot, { "modifier.rcontrol", "!talent(7,2)", }, },
     { spell.FocusingShot, { "modifier.rcontrol", "talent(7,2)", }, },
 }
 local pvp = {
@@ -192,18 +196,103 @@ local spellqueue = {
 }
 
 local opener = {
+    { spell.Trinket1, { "modifier.cooldowns", }, },
+    { spell.Trinket2, { "modifier.cooldowns", }, },
+    { spell.BloodFury, { "modifier.cooldowns", }, },
+    { spell.ChimaeraShot, { "!toggle.nocleave", }, },
+    { spell.Berserking, { "modifier.cooldowns", }, },
+    { spell.Stampede, { "modifier.cooldowns", }, },
+    { spell.AMurderofCrows, { "modifier.cooldowns", }, },
+    { spell.RapidFire, { "modifier.cooldowns", }, },
+    { spell.AimedShot, },
 }
 local simc = {
+    --actions=auto_shot
+
+    --actions+=/use_item,name=lucky_doublesided_coin
+    --actions+=/use_item,name=beating_heart_of_the_mountain
+    --actions+=/use_item,name=primal_gladiators_badge_of_conquest
+    { spell.Trinket1, { "modifier.cooldowns", }, },
+    { spell.Trinket2, { "modifier.cooldowns", }, },
+    --actions+=/arcane_torrent,if=focus.deficit>=30
+    { spell.ArcaneTorrent, { "modifier.cooldowns", "target.deathin > 15", "player.focus <= 70", }, },
+    --actions+=/blood_fury
+    { spell.BloodFury, { "modifier.cooldowns", "target.deathin > 15", }, },
+    --actions+=/berserking
+    { spell.Berserking, { "modifier.cooldowns", "target.deathin > 15", }, },
+    --actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25
+    { spell.AgilityPotion, { "toggle.consumables", "player.buff("..spell.RapidFire..")", "player.spell("..spell.Stampede..").cooldown < 1", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.hashero", "player.spell("..spell.Stampede..").cooldown < 1", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "target.deathin <= 25", }, },
+    --actions+=/chimaera_shot
+    { spell.ChimaeraShot, { "!toggle.nocleave", }, },
+    --actions+=/kill_shot
+    { spell.KillShot, },
+    --actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
+    { spell.SteadyShot, { "lastcast("..spell.SteadyShot..")", "talent(4,1)", "@LibHunter.SimCMM14plusSSCRplusASCRlessthanorequaltoFD()", }, },
+    --actions+=/rapid_fire
+    { spell.RapidFire, { "modifier.cooldowns", }, },
+    --actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=25
+    { spell.Stampede, { "modifier.cooldowns", "player.buff("..spell.RapidFire..")", }, },
+    { spell.Stampede, { "modifier.cooldowns", "player.hashero", }, },
+    { spell.Stampede, { "modifier.cooldowns", "target.deathin <= 25", }, },
+    --actions+=/call_action_list,name=careful_aim,if=buff.careful_aim.up
+    --{
+        --actions.careful_aim=glaive_toss,if=active_enemies>2
+        { spell.GlaiveToss, { EnemyInArea_10_2, "modifier.multitarget", "!toggle.nocleave", }, },
+        --actions.careful_aim+=/powershot,if=active_enemies>1&cast_regen<focus.deficit
+        { spell.Powershot, { EnemyInArea_10_1, "@LibHunter.SimCMMPSCRlessthanFD()", "modifier.multitarget", "!toggle.nocleave", }, },
+        --actions.careful_aim+=/barrage,if=active_enemies>1
+        { spell.Barrage, { EnemyInArea_10_1, "modifier.multitarget", "!toggle.nocleave", }, },
+        --actions.careful_aim+=/aimed_shot
+        { spell.AimedShot, },
+        --actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
+        { spell.FocusingShot, { "@LibHunter.SimCMM50FSCRlessthanFD()", }, },
+        --actions.careful_aim+=/steady_shot
+        { spell.SteadyShot, },
+    --}, "@LibHunter.CarefulAimCheck('rareelite')", },
+    --actions+=/explosive_trap,if=active_enemies>1
+    { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", EnemyInArea_10_1, }, },
+    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", EnemyInArea_10_1, }, "target.ground", },
+    --actions+=/a_murder_of_crows
+    { spell.AMurderofCrows, { "target.deathin > 60", "modifier.cooldowns", }, },
+    { spell.AMurderofCrows, { "target.deathin < 12", }, },
+    --actions+=/dire_beast,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
+    { spell.DireBeast, { "@LibHunter.SimCMMDBCRplusASCRlessthanFD()", }, },
+    --actions+=/glaive_toss
+    { spell.GlaiveToss, { "!toggle.nocleave", }, },
+    --actions+=/powershot,if=cast_regen<focus.deficit
+    { spell.Powershot, { "@LibHunter.SimCMMPSCRlessthanFD()", "!toggle.nocleave", }, },
+    --actions+=/barrage
+    { spell.Barrage, { "!toggle.nocleave", }, },
+    --actions+=/steady_shot,if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains
+    { spell.SteadyShot, { "@LibHunter.SimCMMFDtimesSSCTdividedby14plusSSCRgreatherthanRFCD()", }, },
+    --actions+=/focusing_shot,if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100
+    { spell.FocusingShot, { "@LibHunter.SimCMMFDtimesFSCTdividedby50plusFSCRgreatherthanRFCD()", "player.focus < 100", }, },
+    --actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
+    { spell.SteadyShot, { "lastcast("..spell.SteadyShot..")", "talent(4,1)", "@LibHunter.SimCMM14plusSSCRplusASCRlessthanorequaltoFD()", }, },
+    --actions+=/multishot,if=active_enemies>6
+    { spell.MultiShot, { EnemyInArea_10_6, "modifier.multitarget", "!toggle.nocleave", }, },
+    --actions+=/aimed_shot,if=talent.focusing_shot.enabled
+    { spell.AimedShot, { "talent(7,2)", }, },
+    --actions+=/aimed_shot,if=focus+cast_regen>=85
+    { spell.AimedShot, { "@LibHunter.SimCMMFplusASCRgreaterthanorequalto85()", }, },
+    --actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
+    { spell.AimedShot, { "player.buff("..spell.ThrilloftheHunt..")", "@LibHunter.SimCMMFplusASCRgreaterthanorequalto65()", }, },
+    --actions+=/focusing_shot,if=50+cast_regen-10<focus.deficit
+    { spell.FocusingShot, { "@LibHunter.SimCMM50plusFSCRminus10lessthanFD()", }, },
+    --actions+=/steady_shot
+    { spell.SteadyShot, },
 }
 
 ProbablyEngine.rotation.register_custom(254, "Rotation Agent - Marksmanship",
 {
-    { "/stopcasting\n/stopcasting\n/stopattack\n/petfollow", { "@LibHunter.ImmuneTargetCheck(2, 'target')", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "modifier.lshift", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "lastcast("..spell.FeignDeath..")", }, },
-    { "/stopattack\n/petfollow", { "player.buff("..spell.Food..")", }, },
+    { string.PauseIncPet, { "@LibHunter.ImmuneTargetCheck(2, 'target')", }, },
+    { string.PauseIncPet, { "modifier.lshift", }, },
+    { string.PauseIncPet, { "lastcast("..spell.FeignDeath..")", }, },
+    { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 
-    { opener, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
+    { opener, {"@LibHunter.UseOpenerCheck('rareelite', 4)", }, },
 
     { poolfocus, },
     { spellqueue, },

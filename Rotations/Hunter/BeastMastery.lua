@@ -35,6 +35,7 @@ local spell = {
     Misdirection = "34477",
     MultiShot = "2643",
     RevivePet = "982",
+    SteadyShot = "56641",
     TrapLauncher = "77769",
     TranquilizingShot = "19801",
     -- GLYPHS
