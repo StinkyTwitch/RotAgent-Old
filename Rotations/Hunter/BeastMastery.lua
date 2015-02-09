@@ -41,7 +41,7 @@ local spell = {
     -- GLYPHS
     Fetch = "125050",
     Fireworks = "127933",
-    --SnakeTrap = "",
+    SnakeTrap = "82948",
     -- BEASTMASTERY
     BestialWrath = "19574",
     CobraShot = "77767",
@@ -69,12 +69,6 @@ local spell = {
     HealthStone = "#5512",
     Trinket1 = "#trinket1",
     Trinket2 = "#trinket2",
-    -- MACROS
-    HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
-    Pause = "/stopcasting\n/stopcasting\n/stopattack",
-    PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
-    PetAttack = "/petattack",
-    PetDash = "/cast Dash",
     -- BUFFS
     ArchmagesIncandescence = "177161",
     ArchmagesGreaterIncandescence = "177172",
@@ -84,6 +78,14 @@ local spell = {
     SerpentSting = "118253",
     SteadyFocus = "177668",
     ThrilloftheHunt = "34720",
+}
+local string = {
+    -- MACROS
+    HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
+    Pause = "/stopcasting\n/stopcasting\n/stopattack",
+    PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
+    PetAttack = "/petattack",
+    PetDash = "/cast Dash",
 }
 local defensive = {
     { spell.HealthStone, { "player.health < 40", }, },
@@ -115,9 +117,9 @@ local misdirect = {
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "player.threat > 50", }, "focus", },
 }
 local ooc = {
-    { "pause", { "modifier.lshift", }, },
-    { "pause", "player.buff("..spell.FeignDeath..")", },
-    { "pause", "player.buff("..spell.Food..")", },
+    { string.Pause, { "modifier.lshift", }, },
+    { string.Pause, "player.buff("..spell.FeignDeath..")", },
+    { string.Pause, "player.buff("..spell.Food..")", },
 
     { spell.DismissPet, { "pet.exists", "talent(7,3)", }, },
     { spell.RevivePet, { "pet.dead", "!talent(7,3)", }, },
@@ -201,10 +203,10 @@ local simc = {
 
 ProbablyEngine.rotation.register_custom(253, "Rotation Agent - Beast Mastery",
 {
-    { "/stopcasting\n/stopcasting\n/stopattack\n/petfollow", { "@LibHunter.ImmuneTargetCheck(2, 'target')", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "modifier.lshift", }, },
-    { "/stopcasting\n/stopattack\n/petfollow", { "lastcast("..spell.FeignDeath..")", }, },
-    { "/stopattack\n/petfollow", { "player.buff("..spell.Food..")", }, },
+    { string.PauseIncPet, { "@LibHunter.ImmuneTargetCheck(2, 'target')", }, },
+    { string.PauseIncPet, { "modifier.lshift", }, },
+    { string.PauseIncPet, { "lastcast("..spell.FeignDeath..")", }, },
+    { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 
     { opener, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
 

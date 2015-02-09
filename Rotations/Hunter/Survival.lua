@@ -41,7 +41,7 @@ local spell = {
     -- GLYPHS
     Fetch = "125050",
     Fireworks = "127933",
-    --SnakeTrap = "",
+    SnakeTrap = "82948",
     -- SURVIVAL
     BlackArrow = "3674",
     CobraShot = "77767",
@@ -68,12 +68,6 @@ local spell = {
     HealthStone = "#5512",
     Trinket1 = "#trinket1",
     Trinket2 = "#trinket2",
-    -- MACROS
-    HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
-    Pause = "/stopcasting\n/stopcasting\n/stopattack",
-    PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
-    PetAttack = "/petattack",
-    PetDash = "/cast Dash",
     -- BUFFS
     ArchmagesIncandescence = "177161",
     ArchmagesGreaterIncandescence = "177172",
@@ -123,9 +117,9 @@ local misdirect = {
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "player.threat > 50", }, "focus", },
 }
 local ooc = {
-    { "pause", { "modifier.lshift", }, },
-    { "pause", "player.buff("..spell.FeignDeath..")", },
-    { "pause", "player.buff("..spell.Food..")", },
+    { string.Pause, { "modifier.lshift", }, },
+    { string.Pause, "player.buff("..spell.FeignDeath..")", },
+    { string.Pause, "player.buff("..spell.Food..")", },
 
     { spell.DismissPet, { "pet.exists", "talent(7,3)", }, },
     { spell.RevivePet, { "pet.dead", "!talent(7,3)", }, },
@@ -135,24 +129,24 @@ local ooc = {
 }
 local pause = {
     -- IMMUNE TARGET
-    { spell.PauseIncPet, { "pet.exists", "@LibHunter.ImmuneTargetCheck(1, 'target')", }, },
-    { spell.Pause, { "!pet.exists", "@LibHunter.ImmuneTargetCheck(1, 'target')", }, },
+    { string.PauseIncPet, { "pet.exists", "@LibHunter.ImmuneTargetCheck(1, 'target')", }, },
+    { string.Pause, { "!pet.exists", "@LibHunter.ImmuneTargetCheck(1, 'target')", }, },
     -- LEFT SHIFT PAUSE ROTATION
-    { spell.PauseIncPet, { "pet.exists", "modifier.lshift", }, },
-    { spell.Pause, { "!pet.exists", "modifier.lshift", }, },
+    { string.PauseIncPet, { "pet.exists", "modifier.lshift", }, },
+    { string.Pause, { "!pet.exists", "modifier.lshift", }, },
     -- FEIGN DEATH PAUSE ROTATION
-    { spell.PauseIncPet, { "pet.exists", "lastcast("..spell.FeignDeath..")", }, },
-    { spell.Pause, { "!pet.exists", "lastcast("..spell.FeignDeath.." )", }, },
+    { string.PauseIncPet, { "pet.exists", "lastcast("..spell.FeignDeath..")", }, },
+    { string.Pause, { "!pet.exists", "lastcast("..spell.FeignDeath.." )", }, },
     -- PLAYER EATING/DRINKING PAUSE ROTATION
-    { spell.PauseIncPet, { "player.buff("..spell.Food..")", }, },
+    { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 }
 local petmanagement = {
     { spell.Misdirection, { "pet.exists", "!pet.dead", "!pet.buff("..spell.Misdirection..")", "!focus.exists", }, "pet", },
     { spell.HeartOfThePhoenix, { "!talent(7,3)", "pet.dead", }, },
     { spell.RevivePet, { "!talent(7,3)", "pet.dead", }, },
     { spell.MendPet, { "pet.exists", "!pet.dead", "!pet.buff("..spell.MendPet..")", "pet.health <= 90", }, "pet", },
-    { spell.PetAttack, { "pet.exists", "timeout(petAttack, 1)", }, },
-    { spell.PetDash, { "pet.exists", "@LibHunter.UnitToUnitDistanceCheck('pet', 'target', 15)", "timeout(petDash, 2)", }, },
+    { string.PetAttack, { "pet.exists", "timeout(petAttack, 1)", }, },
+    { string.PetDash, { "pet.exists", "@LibHunter.UnitToUnitDistanceCheck('pet', 'target', 15)", "timeout(petDash, 2)", }, },
 }
 local poolfocus = {
     { spell.CobraShot, { "modifier.rcontrol", "!talent(7,2)", }, },
@@ -193,7 +187,7 @@ local spellqueue = {
     { spell.Stampede, "@LibHunter.CheckHunterQueue(121818)", },
     { spell.TranquilizingShot, "@LibHunter.CheckHunterQueue(19801)", },
     { spell.WyvernSting, "@LibHunter.CheckHunterQueue(19386)", },
-    { spell.HunterJump, { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
+    { string.HunterJump, { "@LibHunter.CheckHunterQueue(781)", "timeout(HunterJump, 1)", }, },
     -- HUNTER SURVIVAL
     { spell.BlackArrow, "@LibHunter.CheckHunterQueue(3674)", },
     { spell.ExplosiveShot, "@LibHunter.CheckHunterQueue(53301)", },
@@ -204,11 +198,12 @@ local opener = {
     { spell.Trinket2, { "modifier.cooldowns", }, },
     { spell.BloodFury, { "modifier.cooldowns", }, },
     { spell.AMurderofCrows, { "modifier.cooldowns", }, },
+    { spell.ExplosiveShot, },
     { spell.BlackArrow, },
-    { spell.ArcaneShot, { "player.buff("..spell.ThrilloftheHunt..")", "player.buff("..spell.BalancedFate..")", }, },
-    { spell.ExplosiveShot, { "!player.buff("..spell.ThrilloftheHunt..")", }, },
-    { spell.ArcaneShot, { "!target.debuff("..spell.SerpentSting..")", }, },
+    { spell.ArcaneShot, { "player.buff("..spell.ThrilloftheHunt..").count > 2", }, },
+    { spell.ExplosiveShot, { "player.buff("..spell.LockandLoad..")", }, },
     { spell.Berserking, { "modifier.cooldowns", }, },
+    { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
 }
 local azor_singletarget = {
     { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
