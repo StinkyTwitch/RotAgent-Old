@@ -77,6 +77,8 @@ local spell = {
     SerpentSting = "118253",
     SteadyFocus = "177668",
     ThrilloftheHunt = "34720",
+    -- DEBUFFS
+    InfestingSpores = "163242",
 }
 local string = {
     -- MACROS
@@ -94,6 +96,8 @@ local defensive = {
     { spell.MastersCall, { "pet.exists", "player.state.stun", }, },
     { spell.MastersCall, { "pet.exists", "player.state.root", }, },
     { spell.MastersCall, { "pet.exists", "player.state.snare", "!player.debuff("..spell.Dazed..")", }, },
+    -- BOSS DEBUFFS
+    { spell.FeignDeath, { "player.debuff("..spell.InfestingSpores..").count >= 6", }, },
 }
 local interrupts = {
     { spell.CounterShot, { "target.interruptAt(50)", "modifier.interrupts" }, "target", },

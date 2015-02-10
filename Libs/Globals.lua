@@ -132,6 +132,7 @@ SpecialTargets = {
     77252,      -- Ore Crate (BRF Oregorger)
     79504,      -- Ore Crate (BRF Oregorger)
     86644,      -- Ore Crate (BRF Oregorger)
+    77665,      -- Iron Bomber (BRF Blackhand)
 }
 
 
