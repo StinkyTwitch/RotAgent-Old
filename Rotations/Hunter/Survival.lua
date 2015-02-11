@@ -363,7 +363,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
     { string.PauseIncPet, { "lastcast("..spell.FeignDeath..")", }, },
     { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 
-    { opener, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
+    { opener, { "@LibHunter.UseOpenerCheck('normal', 4)", }, },
 
     { poolfocus, },
     { spellqueue, },
@@ -376,7 +376,7 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
 
     --{ azor_singletarget, { "target.area(10).enemies < 2", }, },
     --{ azor_multitarget, { "target.area(10).enemies >= 2", "modifier.multitarget", }, },
-    { simc, },
+    { simc, { "!@LibHunter.UseOpenerCheck('normal', 4)", }, },
 },
 
 {
