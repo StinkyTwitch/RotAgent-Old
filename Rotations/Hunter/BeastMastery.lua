@@ -215,7 +215,7 @@ ProbablyEngine.rotation.register_custom(253, "Rotation Agent - Beast Mastery",
     { string.PauseIncPet, { "lastcast("..spell.FeignDeath..")", }, },
     { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 
-    { opener, {"@LibHunter.UseOpenerCheck('normal', 4)", }, },
+    { opener, { "@LibHunter.UseOpenerCheck('normal', 4)", }, },
 
     { poolfocus, },
     { spellqueue, },
@@ -226,7 +226,7 @@ ProbablyEngine.rotation.register_custom(253, "Rotation Agent - Beast Mastery",
     { misdirect, { "toggle.md", }, },
     { pvp, },
 
-    { simc, },
+    { simc, { "!@LibHunter.UseOpenerCheck('normal', 4)", }, },
 },
 
 {

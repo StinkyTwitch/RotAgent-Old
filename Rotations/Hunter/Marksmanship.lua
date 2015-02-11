@@ -287,7 +287,7 @@ ProbablyEngine.rotation.register_custom(254, "Rotation Agent - Marksmanship",
     { string.PauseIncPet, { "lastcast("..spell.FeignDeath..")", }, },
     { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 
-    { opener, {"@LibHunter.UseOpenerCheck('rareelite', 4)", }, },
+    { opener, { "@LibHunter.UseOpenerCheck('rareelite', 4)", }, },
 
     { poolfocus, },
     { spellqueue, },
@@ -297,7 +297,7 @@ ProbablyEngine.rotation.register_custom(254, "Rotation Agent - Marksmanship",
     { misdirect, { "toggle.md", }, },
     { pvp, },
 
-    { simc, },
+    { simc, { "!@LibHunter.UseOpenerCheck('rareelite', 4)", }, },
 },
 
 {
