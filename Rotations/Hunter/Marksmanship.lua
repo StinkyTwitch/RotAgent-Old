@@ -78,10 +78,12 @@ local spell = {
     SteadyFocus = "177668",
     ThrilloftheHunt = "34720",
     -- DEBUFFS
+    Flamethrower = "163322",
     InfestingSpores = "163242",
 }
 local string = {
     -- MACROS
+    ExtraActionButton = "/click ExtraActionButton1",
     HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
     Pause = "/stopcasting\n/stopcasting\n/stopattack",
     PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
@@ -97,6 +99,7 @@ local defensive = {
     { spell.MastersCall, { "pet.exists", "player.state.root", }, },
     { spell.MastersCall, { "pet.exists", "player.state.snare", "!player.debuff("..spell.Dazed..")", }, },
     -- BOSS DEBUFFS
+    { string.ExtraActionButton, { "player.buff("..spell.Flamethrower..")", }, },
     { spell.FeignDeath, { "player.debuff("..spell.InfestingSpores..").count >= 6", }, },
 }
 local interrupts = {

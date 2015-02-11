@@ -674,7 +674,22 @@ STAT PROCS
 
 --------------------------------------------------------------------------------------------------]]
 function StatProcs(index)
-    local index = index
+    local index = string.lower(index)
+
+    if index == "strength" then
+        index = 1
+    elseif index == "agility" then
+        index = 2
+    elseif index == "stamina" then
+        index = 3
+    elseif index == "intellect" then
+        index = 4
+    elseif index == "spirit" then
+        index = 5
+    else
+        return false
+    end
+
     local current_stat = UnitStat("player", index)
 
     if current_stat > BASESTATSVALUE[index] then

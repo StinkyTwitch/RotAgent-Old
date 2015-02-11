@@ -79,10 +79,12 @@ local spell = {
     SteadyFocus = "177668",
     ThrilloftheHunt = "34720",
     -- DEBUFFS
+    Flamethrower = "163322",
     InfestingSpores = "163242",
 }
 local string = {
     -- MACROS
+    ExtraActionButton = "/click ExtraActionButton1",
     HunterJump = "/stopcasting\n/stopcasting\n/hunterjump",
     Pause = "/stopcasting\n/stopcasting\n/stopattack",
     PauseIncPet = "/stopcasting\n/stopcasting\n/stopattack\n/petfollow",
@@ -98,6 +100,7 @@ local defensive = {
     { spell.MastersCall, { "pet.exists", "player.state.root", }, },
     { spell.MastersCall, { "pet.exists", "player.state.snare", "!player.debuff("..spell.Dazed..")", }, },
     -- BOSS DEBUFFS
+    { string.ExtraActionButton, { "player.buff("..spell.Flamethrower..")", }, },
     { spell.FeignDeath, { "player.debuff("..spell.InfestingSpores..").count >= 6", }, },
 }
 local interrupts = {
@@ -264,8 +267,8 @@ local simc = {
     --actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|
     --         buff.archmages_greater_incandescence_agi.up))|
     --         target.time_to_die<=25
-    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.Stampede..").cooldown < 1", "@LibHunter.StatProcs(2)", }, },
-    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.AMurderofCrows..").cooldown < 1", "@LibHunter.StatProcs(2)", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.Stampede..").cooldown < 1", "@LibHunter.StatProcs('agility')", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.AMurderofCrows..").cooldown < 1", "@LibHunter.StatProcs('agility')", }, },
     { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.Stampede..").cooldown < 1", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
     { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.AMurderofCrows..").cooldown < 1", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
     { spell.AgilityPotion, { "toggle.consumables", "target.deathin <= 25", }, },
@@ -277,7 +280,7 @@ local simc = {
         --            buff.archmages_incandescence_agi.up))
         { spell.Stampede, { "modifier.cooldowns", "@LibHunter.SimCBuffPotionUp(109217)", }, },
         { spell.Stampede, { "modifier.cooldowns", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
-        { spell.Stampede, { "modifier.cooldowns", "@LibHunter.StatProcs(2)", }, },
+        { spell.Stampede, { "modifier.cooldowns", "@LibHunter.StatProcs('agility')", }, },
         --actions.aoe+=/explosive_shot,if=buff.lock_and_load.react&(!talent.barrage.enabled|cooldown.barrage.remains>0)
         { spell.ExplosiveShot, { "player.buff("..spell.LockandLoad..")", "!talent(6,3)", }, },
         { spell.ExplosiveShot, { "player.buff("..spell.LockandLoad..")", "player.spell("..spell.Barrage..").cooldown > 0", }, },
@@ -321,7 +324,7 @@ local simc = {
     --         target.time_to_die<=25
     { spell.Stampede, { "modifier.cooldowns", "player.buff("..spell.AgilityPotion..")", }, },
     { spell.Stampede, { "modifier.cooldowns", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
-    { spell.Stampede, { "modifier.cooldowns", "@LibHunter.StatProcs(2)", }, },
+    { spell.Stampede, { "modifier.cooldowns", "@LibHunter.StatProcs('agility')", }, },
     { spell.Stampede, { "modifier.cooldowns", "target.deathin <= 25", }, },
     --actions+=/a_murder_of_crows
     { spell.AMurderofCrows, { "target.deathin > 60", "modifier.cooldowns", }, },
