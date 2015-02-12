@@ -203,21 +203,20 @@ local opener = {
 }
 local simc = {
     --actions=auto_shot
-
     --actions+=/use_item,name=lucky_doublesided_coin
     --actions+=/use_item,name=beating_heart_of_the_mountain
     --actions+=/use_item,name=primal_gladiators_badge_of_conquest
     { spell.Trinket1, { "modifier.cooldowns", }, },
     { spell.Trinket2, { "modifier.cooldowns", }, },
     --actions+=/arcane_torrent,if=focus.deficit>=30
-    { spell.ArcaneTorrent, { "modifier.cooldowns", "target.deathin > 15", "player.focus <= 70", }, },
+    { spell.ArcaneTorrent, { "modifier.cooldowns", "player.focus <= 90", }, },
     --actions+=/blood_fury
-    { spell.BloodFury, { "modifier.cooldowns", "target.deathin > 15", }, },
+    { spell.BloodFury, { "modifier.cooldowns", }, },
     --actions+=/berserking
-    { spell.Berserking, { "modifier.cooldowns", "target.deathin > 15", }, },
+    { spell.Berserking, { "modifier.cooldowns", }, },
     --actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=25
-    { spell.AgilityPotion, { "toggle.consumables", "player.buff("..spell.RapidFire..")", "player.spell("..spell.Stampede..").cooldown < 1", }, },
-    { spell.AgilityPotion, { "toggle.consumables", "player.hashero", "player.spell("..spell.Stampede..").cooldown < 1", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.buff("..spell.RapidFire..")", "player.spell("..spell.Stampede..").cooldown = 0", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.hashero", "player.spell("..spell.Stampede..").cooldown = 0", }, },
     { spell.AgilityPotion, { "toggle.consumables", "target.deathin <= 25", }, },
     --actions+=/chimaera_shot
     { spell.ChimaeraShot, { "!toggle.nocleave", }, },
@@ -247,8 +246,8 @@ local simc = {
         { spell.SteadyShot, },
     --}, "@LibHunter.CarefulAimCheck('rareelite')", },
     --actions+=/explosive_trap,if=active_enemies>1
-    { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", "target.area(10).enemies > 1", }, },
-    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "target.deathin >= 10", "!toggle.nocleave", "target.exists", "target.area(10).enemies > 1", }, "target.ground", },
+    { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "target.deathin >= 20", "!toggle.nocleave", "target.exists", "target.area(10).enemies > 1", }, },
+    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "target.deathin >= 20", "!toggle.nocleave", "target.exists", "target.area(10).enemies > 1", }, "target.ground", },
     --actions+=/a_murder_of_crows
     { spell.AMurderofCrows, { "target.deathin > 60", "modifier.cooldowns", }, },
     { spell.AMurderofCrows, { "target.deathin < 12", }, },

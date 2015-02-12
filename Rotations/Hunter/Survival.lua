@@ -44,6 +44,7 @@ local spell = {
     SnakeTrap = "82948",
     -- SURVIVAL
     BlackArrow = "3674",
+    BlackArrowNow = "!3674",
     CobraShot = "77767",
     ExplosiveShot = "53301",
     ExplosiveShotNow = "!53301",
@@ -253,24 +254,41 @@ local azor_multitarget = {
     { spell.FocusingShot, { "player.focus < 50", }, },
     { spell.CobraShot, { "player.focus < 86", }, },
 }
+local noxxic = {
+    --{ spell., { }, },
+    { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
+    { spell.BloodFury, { "modifier.cooldowns", }, },
+    { spell.Berserking, { "modifier.cooldowns", }, },
+
+    { spell.BlackArrowNow, { "!target.debuff("..spell.BlackArrow..")", }, },
+    { spell.ExplosiveShot, { "player.buff("..spell.LockandLoad..")", }, },
+    { spell.ExplosiveShot, },
+    { spell.AMurderofCrows, { "modifier.cooldowns", }, },
+    { spell.ArcaneShot, { "player.focus > 70", }, },
+    { spell.ArcaneShot, { "player.buff("..spell.ThrilloftheHunt..")", }, },
+    { spell.ArcaneShot, { "!target.debuff("..spell.SerpentSting..")", }, },
+    { spell.ArcaneShot, { "target.debuff("..spell.SerpentSting..").duration < 4", }, },
+    { spell.FocusingShot, { "player.focus < 50", }, },
+    { spell.CobraShot, { "player.focus < 70", }, },
+}
 local simc = {
     --actions=auto_shot
     --actions+=/use_items
     { spell.Trinket1, { "modifier.cooldowns", }, },
     { spell.Trinket2, { "modifier.cooldowns", }, },
     --actions+=/arcane_torrent,if=focus.deficit>=30
-    { spell.ArcaneTorrent, { "modifier.cooldowns", "target.deathin > 20", "player.focus <= 70", }, },
+    { spell.ArcaneTorrent, { "modifier.cooldowns", "player.focus <= 70", }, },
     --actions+=/blood_fury
-    { spell.BloodFury, { "modifier.cooldowns", "target.deathin > 20", }, },
+    { spell.BloodFury, { "modifier.cooldowns", }, },
     --actions+=/berserking
-    { spell.Berserking, { "modifier.cooldowns", "target.deathin > 20", }, },
+    { spell.Berserking, { "modifier.cooldowns", }, },
     --actions+=/potion,name=draenic_agility,if=(((cooldown.stampede.remains<1)&(cooldown.a_murder_of_crows.remains<1))&(trinket.stat.any.up|
     --         buff.archmages_greater_incandescence_agi.up))|
     --         target.time_to_die<=25
-    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.Stampede..").cooldown < 1", "@LibHunter.StatProcs('agility')", }, },
-    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.AMurderofCrows..").cooldown < 1", "@LibHunter.StatProcs('agility')", }, },
-    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.Stampede..").cooldown < 1", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
-    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.AMurderofCrows..").cooldown < 1", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.Stampede..").cooldown = 0", "@LibHunter.StatProcs('agility')", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.AMurderofCrows..").cooldown = 0", "@LibHunter.StatProcs('agility')", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.Stampede..").cooldown = 0", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
+    { spell.AgilityPotion, { "toggle.consumables", "player.spell("..spell.AMurderofCrows..").cooldown = 0", "player.buff("..spell.ArchmagesGreaterIncandescence..")", }, },
     { spell.AgilityPotion, { "toggle.consumables", "target.deathin <= 25", }, },
     --actions+=/call_action_list,name=aoe,if=active_enemies>1
     {{
@@ -376,6 +394,9 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
 
     --{ azor_singletarget, { "target.area(10).enemies < 2", }, },
     --{ azor_multitarget, { "target.area(10).enemies >= 2", "modifier.multitarget", }, },
+
+    --{ noxxic, { "!@LibHunter.UseOpenerCheck('normal', 4)", }, },
+
     { simc, { "!@LibHunter.UseOpenerCheck('normal', 4)", }, },
 },
 
@@ -421,19 +442,21 @@ function()
 
     BaseStatsInit()
 
-    C_Timer.NewTicker(0.1, (function()
-        -- Out of Combat Timer Functions
-        BaseStatsUpdate()
+    C_Timer.NewTicker(0.1, (
+        function()
+            -- Out of Combat Timer Functions
+            BaseStatsUpdate()
 
-        -- In Combat Timer Functions
-        if ProbablyEngine.config.read('button_states', 'MasterToggle', false)
-            and ProbablyEngine.config.read('button_states', 'autotarget', false)
-            and ProbablyEngine.module.player.combat
-        then
-            DEBUG(5, "Survival.lua:C_Timer.NewTicker()")
-            CacheUnits()
-            AutoTarget()
-        end
-    end), nil)
+            -- In Combat Timer Functions
+            if ProbablyEngine.config.read('button_states', 'MasterToggle', false)
+                and ProbablyEngine.config.read('button_states', 'autotarget', false)
+                and ProbablyEngine.module.player.combat
+            then
+                DEBUG(5, "Survival.lua:C_Timer.NewTicker()")
+                CacheUnits()
+                AutoTarget()
+            end
+        end),
+    nil)
 end
 )
