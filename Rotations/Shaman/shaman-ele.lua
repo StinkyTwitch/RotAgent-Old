@@ -4,8 +4,6 @@ ProbablyEngine.rotation.register_custom(262, "Shaman Elemental",
 -- Combat
 {
 
-
-	
 },
 
 -- Out of Combat
