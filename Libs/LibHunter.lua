@@ -281,6 +281,53 @@ end
 
 
 --[[------------------------------------------------------------------------------------------------
+AUTO EXPLOSIVE TRAP
+    * Finds the largest grouping of Units to throw Explosive Trap at.
+--------------------------------------------------------------------------------------------------]]
+function LibHunter.AutoExplosiveTrap(radius)
+    local radius = radius
+
+    local cluster_target = nil
+    local largest_cluster = 0
+    local units_in_cluster = 0
+
+    --local actual_combat_time = (GetTime() - ProbablyEngine.module.player.combatTime)
+
+    if ProbablyEngine.module.player.casting == true then
+        return false
+    end
+
+
+    for i=1, #CACHEUNITSTABLE do
+        local distance = GetDistance("player", CACHEUNITSTABLE[i].key)
+
+        if distance <= 40 then
+            center_unit_of_cluster = CACHEUNITSTABLE[i].key
+            units_in_cluster = 0
+
+            for j=1, #CACHEUNITSTABLE do
+                local cluster_distance = GetDistance(CACHEUNITSTABLE[i].key, CACHEUNITSTABLE[j].key)
+
+                if cluster_distance <= 8 and not cluster_distance == 0 then
+                    units_in_cluster = units_in_cluster + 1
+                end
+            end
+            if units_in_cluster >= largest_cluster then
+                largest_cluster = units_in_cluster
+                cluster_target = i
+            end
+        end
+    end
+    --if cluster_target ~= nil and actual_combat_time > 4 then
+    if cluster_target ~= nil then
+        CastGround("Explosive Trap", CACHEUNITSTABLE[cluster_target].key)
+        return true
+    end
+    return false
+end
+
+
+--[[------------------------------------------------------------------------------------------------
 SERPENT STING DOT CHECK
     *
 --------------------------------------------------------------------------------------------------]]

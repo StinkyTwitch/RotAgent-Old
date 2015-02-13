@@ -310,7 +310,8 @@ local simc = {
         { spell.ExplosiveShot, { "target.area(10).enemies < 5", }, },
         --actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
         { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", }, },
-        { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.ClusterTarget(8)", }, "target.ground", },
+        { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", }, "!toggle.autotarget", "target.ground", },
+        { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.AutoExplosiveTrap(10)", }, "toggle.autotarget", },
         --actions.aoe+=/a_murder_of_crows
         { spell.AMurderofCrows, { "modifier.cooldowns", "target.deathin > 60", }, },
         { spell.AMurderofCrows, { "target.deathin < 12", }, },
@@ -443,7 +444,7 @@ function()
 
     BaseStatsInit()
 
-    C_Timer.NewTicker(0.1, (
+    C_Timer.NewTicker(0.25, (
         function()
             -- Out of Combat Timer Functions
             BaseStatsUpdate()
