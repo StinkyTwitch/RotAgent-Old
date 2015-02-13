@@ -446,6 +446,50 @@ end
 
 
 --[[------------------------------------------------------------------------------------------------
+CLUSTER TARGET
+    * Finds the largest grouping of Units.
+--------------------------------------------------------------------------------------------------]]
+function ClusterTarget(radius)
+    local radius = radius
+
+    local cluster_target = nil
+    local largest_cluster = 0
+    local units_in_cluster = 0
+
+    if ProbablyEngine.module.player.casting == true then
+        return false
+    end
+
+
+    for i=1, #CACHEUNITSTABLE do
+        local distance = GetDistance("player", CACHEUNITSTABLE[i].key)
+
+        if distance <= 35 then
+            center_unit_of_cluster = CACHEUNITSTABLE[i].key
+            units_in_cluster = 0
+
+            for j=1, #CACHEUNITSTABLE do
+                local cluster_distance = GetDistance(CACHEUNITSTABLE[i].key, CACHEUNITSTABLE[j].key)
+
+                if cluster_distance <= 8 then
+                    units_in_cluster = units_in_cluster + 1
+                end
+            end
+            if units_in_cluster >= largest_cluster then
+                largest_cluster = units_in_cluster
+                cluster_target = i
+            end
+        end
+    end
+    if cluster_target ~= nil then
+        ProbablyEngine.dsl.parsedTarget = CACHEUNITSTABLE[cluster_target].key
+        return true
+    end
+    return false
+end
+
+
+--[[------------------------------------------------------------------------------------------------
 DEBUG PRINT
 
 --------------------------------------------------------------------------------------------------]]
@@ -465,6 +509,38 @@ function DEBUG(level, debug_string)
             return
         end
     end
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+GET DISTANCE
+
+--------------------------------------------------------------------------------------------------]]
+function GetDistance(a, b)
+    local a, b = a, b
+
+    if UnitExists(a) and UnitIsVisible(a) and UnitExists(b) and UnitIsVisible(b) then
+        local _, ax, ay, az = pcall(ObjectPosition, a)
+        local _, bx, by, bz = pcall(ObjectPosition, b)
+        return math.sqrt(((bx-ax)^2) + ((by-ay)^2) + ((bz-az)^2))
+    end
+    return 0
+end
+
+
+--[[------------------------------------------------------------------------------------------------
+GET DISTANCE COMBAT REACH
+
+--------------------------------------------------------------------------------------------------]]
+function GetDistanceCombatReach(a, b)
+    local a, b = a, b
+
+    if UnitExists(a) and UnitIsVisible(a) and UnitExists(b) and UnitIsVisible(b) then
+        local _, ax, ay, az = pcall(ObjectPosition, a)
+        local _, bx, by, bz = pcall(ObjectPosition, b)
+        return math.sqrt(((bx-ax)^2) + ((by-ay)^2) + ((bz-az)^2)) - ((UnitCombatReach(a)) + (UnitCombatReach(b)))
+    end
+    return 0
 end
 
 

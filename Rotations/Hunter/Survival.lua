@@ -255,7 +255,7 @@ local azor_multitarget = {
     { spell.CobraShot, { "player.focus < 86", }, },
 }
 local noxxic = {
-    --{ spell., { }, },
+    -- THIS IS SHIT!!! DO NOT USE :)~
     { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
     { spell.BloodFury, { "modifier.cooldowns", }, },
     { spell.Berserking, { "modifier.cooldowns", }, },
@@ -310,7 +310,7 @@ local simc = {
         { spell.ExplosiveShot, { "target.area(10).enemies < 5", }, },
         --actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
         { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", }, },
-        { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", }, "target.ground", },
+        { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.ClusterTarget(8)", }, "target.ground", },
         --actions.aoe+=/a_murder_of_crows
         { spell.AMurderofCrows, { "modifier.cooldowns", "target.deathin > 60", }, },
         { spell.AMurderofCrows, { "target.deathin < 12", }, },
@@ -347,6 +347,7 @@ local simc = {
     --actions+=/a_murder_of_crows
     { spell.AMurderofCrows, { "target.deathin > 60", "modifier.cooldowns", }, },
     { spell.AMurderofCrows, { "target.deathin < 12", }, },
+    { spell.AMurderofCrows, { "target.health.actual < 200000", }, },
     --actions+=/black_arrow,if=!ticking
     { spell.BlackArrow, { "player.spell("..spell.BlackArrow..").cooldown = 0", "target.deathin > 12", }, },
     --actions+=/explosive_shot

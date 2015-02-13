@@ -15,6 +15,7 @@ LibHunter.BurstHasteCheck = BurstHasteCheck
 LibHunter.CastingCheck = CastingCheck
 LibHunter.ClassificationValue = ClassificationValue
 LibHunter.ClearCurrentTarget = ClearCurrentTarget
+LibHunter.ClusterTarget = ClusterTarget
 LibHunter.EvalClassification = EvalClassification
 LibHunter.ImmuneTargetCheck = ImmuneTargetCheck
 LibHunter.NotImmuneTargetCheck = NotImmuneTargetCheck
