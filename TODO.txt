@@ -5,22 +5,22 @@ NEXT:
 - Auto Interupt, spell list for PvE
 - AMoC Sniping based on encounter
 	* Some HM and BRF bosses don't use AMoC on boss but adds until boss is in burn phase
-- Explosive Trap cluster targetting
 
 ----------------------------------------------------------------------------------------------------
 -- Version 0.1 Hunter
 ----------------------------------------------------------------------------------------------------
 	## Priority ##
+	[100%]	* Auto cast Explosive Trap on largest cluster of Units
 	[100%]	* Autotarget, If/then tables for:
 					- Nearest
 					- Lowest Health
 					- Cascade (Skull icon to FocusTarget to Nearest/Lowest)
 	[  0%]	* One Lib File for each class.
-					- Local Variables and Functions and Tables.
-			[ 83%]	- Interface\AddOn\Probably_RA\Lib\LibHunter.lua
-			[ 75%]	- Interface\AddOn\Probably_RA\Rotation\hunter-beastmastery.lua
-			[100%]	- Interface\AddOn\Probably_RA\Rotation\hunter-marksmanship.lua
-			[100%]	- Interface\AddOn\Probably_RA\Rotation\hunter-survival.lua
+			[100%]	- Local Variables and Functions and Tables.
+			[100%]	- Lib\LibHunter.lua
+			[ 75%]	- Rotation\hunter-beastmastery.lua
+			[100%]	- Rotation\hunter-marksmanship.lua
+			[100%]	- Rotation\hunter-survival.lua
 
 	## Normal ##
 	[  0%]	* GUI

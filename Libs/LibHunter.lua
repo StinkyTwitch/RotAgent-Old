@@ -34,6 +34,24 @@ LibHunter.QueueTimeValidFor = 4
 LibHunter.SummonPetNumber = 0
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --[[------------------------------------------------------------------------------------------------
 CHECK HUNTER QUEUE
 
@@ -280,6 +298,33 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------
+-------------------------------------------------|--------------------------------------------------
+--                                STAND ALONE LIBHUNTER FUNCTIONS                                 --
+-------------------------------------------------|--------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+
+
+
+
 --[[------------------------------------------------------------------------------------------------
 AUTO EXPLOSIVE TRAP
     * Finds the largest grouping of Units to throw Explosive Trap at.
@@ -328,74 +373,6 @@ end
 
 
 --[[------------------------------------------------------------------------------------------------
-SERPENT STING DOT CHECK
-    *
---------------------------------------------------------------------------------------------------]]
-function LibHunter.SerpentStingDotCheck()
-    local count = table.getn(CACHEUNITSTABLE)
-    local unit_without_serpent_sting = nil
-
-    for i=1, count do
-        local _, x1, y1, z1 = pcall(ObjectPosition, "player")
-        local _, x2, y2, z2 = pcall(ObjectPosition, CACHEUNITSTABLE[i].key)
-        local dx = x2 - x1
-        local dy = y2 - y1
-        local dz = z2 - z1
-        local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
-        local _, has_serpent_sting = pcall(UnitAura, CACHEUNITSTABLE[i].key, "Serpent Sting")
-        --local has_serpent_sting = UnitDebuff(CACHEUNITSTABLE[i].key, "Serpent Sting")
-
-        if has_serpent_sting == nil then
-            if distance <= 40 then
-                DEBUG(1, "Unit("..CACHEUNITSTABLE[i].key..") has serpent sting ("..tostring(has_serpent_sting)..")")
-                unit_without_serpent_sting = i
-            end
-        end
-    end
-    if unit_without_serpent_sting ~= nil then
-        Macro("/target "..CACHEUNITSTABLE[unit_without_serpent_sting].key)
-        Macro("/cast Arcane Shot")
-        Macro("/targetlasttarget")
-        return true
-    end
-    return false
-end
-
-
---[[------------------------------------------------------------------------------------------------
-SERPENT STING DOT CHECK
-    *
---------------------------------------------------------------------------------------------------]]
-function SerpentStingDotCheck()
-    local count = table.getn(CACHEUNITSTABLE)
-    local unit_without_serpent_sting = nil
-
-    for i=1, count do
-        local _, x1, y1, z1 = pcall(ObjectPosition, "player")
-        local _, x2, y2, z2 = pcall(ObjectPosition, CACHEUNITSTABLE[i].key)
-        local dx = x2 - x1
-        local dy = y2 - y1
-        local dz = z2 - z1
-        local distance = math.sqrt((dx*dx) + (dy*dy) + (dz*dz))
-        local _, has_serpent_sting = pcall(UnitAura, CACHEUNITSTABLE[i].key, "Serpent Sting")
-        --local has_serpent_sting = UnitDebuff(CACHEUNITSTABLE[i].key, "Serpent Sting")
-
-        if has_serpent_sting == nil then
-            if distance <= 40 then
-                DEBUG(1, "Unit("..CACHEUNITSTABLE[i].key..") has serpent sting ("..tostring(has_serpent_sting)..")")
-                unit_without_serpent_sting = i
-            end
-        end
-    end
-    if unit_without_serpent_sting ~= nil then
-        ProbablyEngine.dsl.parsedTarget = CACHEUNITSTABLE[unit_without_serpent_sting].key
-        return true
-    end
-    return false
-end
-
-
---[[------------------------------------------------------------------------------------------------
 SUMMON PET
     * Need to verify we have no pet or dismiss pet if we do before using CastSpellByName
 --------------------------------------------------------------------------------------------------]]
@@ -416,56 +393,14 @@ end
 
 
 --[[------------------------------------------------------------------------------------------------
-TRANQ A BUFF
+TRANQ BUFF
     * If target is attackable then we search through the targets buffs/debuffs for "Magic" and ""
     debuffTypes. The "" (blank) type is an oddity with Blizzard. Its the "Enrage" debuffType. If
     it finds a buff we can dispell with Tranquillize the function returns true, otherwise returns
     false.
 --------------------------------------------------------------------------------------------------]]
-function LibHunter.TranqABuff()
+function LibHunter.TranqBuff()
 
-    if UnitExists("target") then
-        local total = 0
-        local totalObjects = ObjectCount()
-
-        for i = 1, totalObjects do
-            local _, object = pcall(ObjectWithIndex, i)
-            local _, object_exists = pcall(ObjectExists, object)
-            local _, obj_text = pcall(tostring, object)
-
-            if object_exists then
-                local _, oType = pcall(ObjectType, object)
-                local bitband = bit.band(oType, ObjectTypes.Unit)
-
-                if bitband > 0 then
-                    local _, dead = pcall(UnitIsDeadOrGhost, object)
-                    local _, reaction = pcall(UnitReaction, "player", object)
-                    local _, special_target = pcall(LibHunter.SpecialTargetCheck, object)
-                    local _, tapped_by_me = pcall(UnitIsTappedByPlayer, object)
-                    local _, tapped_by_all = pcall(UnitIsTappedByAllThreatList, object)
-
-                    if reaction and reaction <= 4 and not dead and (tapped_by_me or tapped_by_all or special_target) then
-                        for i = 1, 40 do
-                            local dispell_type = select(6, pcall(UnitAura, object, i))
-
-                            if dispell_type == "" or dispell_type == "Magic" then
-                                DEBUG(1, "TranqABuff(true) dispell_type:("..dispell_type..") switching target.")
-                                Macro("/target "..object.."")
-                                return true
-                            end
-                        end
-
-                        DEBUG(5, "TranqullizeABuff dispellable buff not found")
-                        return false
-
-                    end
-                end
-            end
-        end
-    else
-        DEBUG(5, "TranqullizeABuff->UnitExists false")
-        return false
-    end
 end
 
 
