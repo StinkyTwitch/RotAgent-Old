@@ -181,77 +181,49 @@ function AutoTarget()
     end
 
     local count = table.getn(CACHEUNITSTABLE)
-    DEBUG(5, "CACHEUNITSTABLE count: ("..count..")")
 
     if AUTOTARGETALGORITHM == "lowest" or AUTOTARGETALGORITHM == "nearest" then
         for i=1, count do
             local object_exists = pcall(ObjectExists, CACHEUNITSTABLE[i].key)
 
             if object_exists then
-                DEBUG(5, "ObjectExists(): true")
                 if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
-                    DEBUG(5, "ImmuneTargetCheck(): false")
                     if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
-                        DEBUG(5, "TargetIsInFrontCheck(): true")
                         if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
-                            DEBUG(5, "UnitCanAttack(true)")
-                            DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
-                            return Macro("/target "..CACHEUNITSTABLE[i].key)
-                        else
-                            DEBUG(5, "UnitCanAttack(false)")
+                            return TargetUnit(CACHEUNITSTABLE[i].key)
+                            --return Macro("/target "..CACHEUNITSTABLE[i].key)
                         end
-                    else
-                        DEBUG(5, "TargetIsInFrontCheck(): false")
                     end
-                else
-                    DEBUG(5, "ImmuneTargetCheck(): true")
                 end
-            else
-                DEBUG(5, "ObjectExists(): false")
             end
         end
     else
         for i=1, count do
             if GetRaidTargetIndex("..CACHEUNITSTABLE[i].key..") == 8 then
-                DEBUG(4, "Targeting: Skull")
-                return Macro("/target "..CACHEUNITSTABLE[i].key)
+                return TargetUnit(CACHEUNITSTABLE[i].key)
+                --return Macro("/target "..CACHEUNITSTABLE[i].key)
             end
         end
         if UnitExists("focustarget") then
-            DEBUG(4, "Targeting: Focus' Target")
-            return Macro("/target focustarget")
+            return TargetUnit("focustarget")
+            --return Macro("/target focustarget")
         else
             for i=1, count do
                 local object_exists = pcall(ObjectExists, CACHEUNITSTABLE[i].key)
 
                 if object_exists then
-                    DEBUG(5, "ObjectExists(): true")
                     if not ImmuneTargetCheck(CACHEUNITSTABLE[i].key) then
-                        DEBUG(5, "ImmuneTargetCheck(): false")
                         if TargetIsInFrontCheck(CACHEUNITSTABLE[i].key) then
-                            DEBUG(5, "TargetIsInFrontCheck(): true")
                             if UnitCanAttack("player", CACHEUNITSTABLE[i].key) then
-                                DEBUG(5, "UnitCanAttack(true)")
-                                DEBUG(4, "Targeting: "..CACHEUNITSTABLE[i].key.."")
-                                return Macro("/target "..CACHEUNITSTABLE[i].key)
-                            else
-                                DEBUG(5, "UnitCanAttack(false)")
+                                return TargetUnit(CACHEUNITSTABLE[i].key)
+                                --return Macro("/target "..CACHEUNITSTABLE[i].key)
                             end
-                        else
-                            DEBUG(5, "TargetIsInFrontCheck(): false")
                         end
-                    else
-                        DEBUG(5, "ImmuneTargetCheck(): true")
                     end
-                else
-                    DEBUG(5, "ObjectExists(): false")
                 end
             end
         end
-
     end
-
-    DEBUG(5, "AutoTarget() false")
     return false
 end
 

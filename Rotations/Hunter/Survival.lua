@@ -448,6 +448,7 @@ function()
         function()
             -- Out of Combat Timer Functions
             BaseStatsUpdate()
+            CACHEUNITSTABLE = {}
 
             -- In Combat Timer Functions
             if ProbablyEngine.config.read('button_states', 'MasterToggle', false)

@@ -5,12 +5,13 @@
 ## Version: 0.0.1
 ## Dependencies: Probably
 
+Externals\LibStub.lua
+Externals\LibDraw.lua
+
+
+Libs\Draw.lua
 Libs\Globals.lua
 Libs\LibHunter.lua
-
-#Config\Hunter\BeastMastery.lua
-#Config\Hunter\Marksmanship.lua
-#Config\Hunter\Survival.lua
 
 Rotations\Hunter\BeastMastery.lua
 Rotations\Hunter\Marksmanship.lua

@@ -10,6 +10,8 @@ NEXT:
 -- Version 0.1 Hunter
 ----------------------------------------------------------------------------------------------------
 	## Priority ##
+	[  0%]	* AMoC Sniping Toggle button.
+				-
 	[100%]	* Auto cast Explosive Trap on largest cluster of Units
 	[100%]	* Autotarget, If/then tables for:
 					- Nearest
