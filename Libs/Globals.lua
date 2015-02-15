@@ -1,7 +1,7 @@
 
 ----------------------------------------------------------------------------------------------------
 -------------------------------------------------|--------------------------------------------------
---                                       GLOBAL CONSTANTS                                         --
+--                                            GLOBALS                                             --
 -------------------------------------------------|--------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 AUTOTARGETALGORITHM = "lowest"
@@ -10,6 +10,7 @@ CACHEUNITSALGORITHM = "lowest"
 CACHEUNITSTABLE = {}
 DEBUGLOGLEVEL = 1
 DEBUGTOGGLE = true
+LIBDRAWPARSEDTARGET = nil
 
 
 
@@ -113,13 +114,12 @@ SpecialTargets = {
     46647,      -- Training Dummy - Lvl 85
     60197,      -- Scarlet Monastery Dummy
     67127,      -- Training Dummy - Lvl 90
+    87318,      -- Dungeoneer's Training Dummy <Damage> ALLIANCE GARRISON
     87761,      -- Dungeoneer's Training Dummy <Damage> HORDE GARRISON
-    88288,      -- Dunteoneer's Training Dummy <Tanking> HORDE GARRISON
-    88289,      -- Training Dummy <Healing> HORDE GARRISON
+    87322,      -- Dungeoneer's Training Dummy <Tanking> ALLIANCE ASHRAN BASE
     88314,      -- Dungeoneer's Training Dummy <Tanking> ALLIANCE GARRISON
-    88316,      -- Training Dummy <Healing> ALLIANCE GARRISON
-    89078,      -- Training Dummy (Garrison)
-    87318,      -- Dungeoneer's Training Dummy <Damage>
+    88836,      -- Dungeoneer's Training Dummy <Tanking> HORDE ASHRAN BASE
+    88288,      -- Dunteoneer's Training Dummy <Tanking> HORDE GARRISON
     -- WOD DUNGEONS/RAIDS
     71075,      -- Small Illusionary Banshee (Proving Grounds)
     75966,      -- Defiled Spirit (Shadowmoon Burial Grounds)
@@ -443,7 +443,7 @@ function ClusterTarget(radius)
             for j=1, #CACHEUNITSTABLE do
                 local cluster_distance = GetDistance(CACHEUNITSTABLE[i].key, CACHEUNITSTABLE[j].key)
 
-                if cluster_distance <= 8 then
+                if cluster_distance <= radius then
                     units_in_cluster = units_in_cluster + 1
                 end
             end
@@ -694,6 +694,7 @@ SPECIAL TARGET CHECK
 
 --------------------------------------------------------------------------------------------------]]
 function SpecialTargetCheck(unit)
+    --[[
     local unit = unit
     local count = table.getn(SpecialTargets)
 
@@ -713,6 +714,16 @@ function SpecialTargetCheck(unit)
         end
     end
 
+    return false
+    --]]
+
+    -- THANK YOU TO MIRAKURU!
+    local unit = unit
+    local _,_,_,_,_,unitID = strsplit("-", UnitGUID(unit))
+
+    if not UnitExists(unit) then return false end
+
+    if SpecialTargets[tonumber(unitID)] ~= nil then return true end
     return false
 end
 
