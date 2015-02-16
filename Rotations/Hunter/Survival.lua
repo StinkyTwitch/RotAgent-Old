@@ -83,6 +83,11 @@ local spell = {
     Flamethrower = "163322",
     InfestingSpores = "163242",
 }
+
+
+
+
+
 local string = {
     -- MACROS
     ExtraActionButton = "/click ExtraActionButton1",
@@ -92,6 +97,11 @@ local string = {
     PetAttack = "/petattack",
     PetDash = "/cast Dash",
 }
+
+
+
+
+
 local defensive = {
     { spell.HealthStone, { "player.health < 40", }, },
     { spell.Deterrence, { "player.health <= 10", }, },
@@ -104,10 +114,20 @@ local defensive = {
     { string.ExtraActionButton, { "player.buff("..spell.Flamethrower..")", }, },
     { spell.FeignDeath, { "player.debuff("..spell.InfestingSpores..").count >= 6", }, },
 }
+
+
+
+
+
 local interrupts = {
     { spell.CounterShot, { "target.interruptAt(50)", "modifier.interrupts" }, "target", },
     { spell.Intimidation, { "target.interruptAt(50)", "modifier.interrupts" }, "target", },
 }
+
+
+
+
+
 local mouseovers = {
     -- CC TRAP
     { spell.FreezingTrap1, { "!player.buff("..spell.TrapLauncher..")", "modifier.lcontrol", }, },
@@ -119,11 +139,21 @@ local mouseovers = {
     { spell.MultiShot, { "toggle.mouseovers", "modifier.lalt", "modifier.multitarget", "!mouseover.debuff("..spell.SerpentSting..")", "@LibHunter.UnitsAroundUnit('mouseover', 8, 2)", }, "mouseover", },
     { spell.ArcaneShot, { "toggle.mouseovers", "modifier.lalt", "!mouseover.debuff("..spell.SerpentSting..")", "!@LibHunter.UnitsAroundUnit('mouseover', 8, 1)", }, "mouseover", },
 }
+
+
+
+
+
 local misdirect = {
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "modifier.ralt", }, "focus", },
     { spell.Misdirection, { "!focus.exists", "!mouseover.buff("..spell.Misdirection..")", "modifier.ralt", }, "mouseover", },
     { spell.Misdirection, { "focus.exists", "!focus.dead", "!focus.buff("..spell.Misdirection..")", "player.threat > 50", }, "focus", },
 }
+
+
+
+
+
 local ooc = {
     { string.Pause, { "modifier.lshift", }, },
     { string.Pause, "player.buff("..spell.FeignDeath..")", },
@@ -135,6 +165,11 @@ local ooc = {
     { spell.Fetch, { "modifier.lcontrol", "!lastcast("..spell.Fetch..")", "!player.moving", "pet.exists", "timeout(timerFetch, 1)", }, },
     { spell.TrapLauncher, { "!player.buff("..spell.TrapLauncher..")", }, },
 }
+
+
+
+
+
 local pause = {
     -- IMMUNE TARGET
     { string.PauseIncPet, { "pet.exists", "@LibHunter.ImmuneTargetCheck(1, 'target')", }, },
@@ -148,6 +183,11 @@ local pause = {
     -- PLAYER EATING/DRINKING PAUSE ROTATION
     { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 }
+
+
+
+
+
 local petmanagement = {
     { spell.Misdirection, { "pet.exists", "!pet.dead", "!pet.buff("..spell.Misdirection..")", "!focus.exists", }, "pet", },
     { spell.HeartOfThePhoenix, { "!talent(7,3)", "pet.dead", }, },
@@ -156,14 +196,29 @@ local petmanagement = {
     { string.PetAttack, { "pet.exists", "timeout(petAttack, 1)", }, },
     { string.PetDash, { "pet.exists", "@LibHunter.UnitToUnitDistanceCheck('pet', 'target', 15)", "timeout(petDash, 2)", }, },
 }
+
+
+
+
+
 local poolfocus = {
     { spell.CobraShot, { "modifier.rcontrol", "!talent(7,2)", }, },
     { spell.FocusingShot, { "modifier.rcontrol", "talent(7,2)", }, },
 }
+
+
+
+
+
 local pvp = {
     { spell.ConcussiveShot, { "target.moving", "!target.immune.snare", }, },
     { spell.TranquilizingShot, { "target.dispellable("..spell.TranquilizingShot..")", }, },
 }
+
+
+
+
+
 local spellqueue = {
     -- HUNTER TRAPS/GROUND SPELLS
     { spell.ExplosiveTrap1, { "@LibHunter.CheckHunterQueue(13813)", "!player.buff("..spell.TrapLauncher..")", }, },
@@ -201,20 +256,56 @@ local spellqueue = {
     { spell.ExplosiveShot, "@LibHunter.CheckHunterQueue(53301)", },
 }
 
+
+
+
+
 local opener = {
     { spell.Trinket1, { "modifier.cooldowns", }, },
     { spell.Trinket2, { "modifier.cooldowns", }, },
     { spell.BloodFury, { "modifier.cooldowns", }, },
-    { spell.Barrage, { "target.area(10).enemies > 1", }, },
-    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.AutoExplosiveTrap(10)", "target.area(10).enemies > 1", }, "toggle.autotarget", },
     { spell.AMurderofCrows, { "modifier.cooldowns", }, },
-    { spell.BlackArrow, },
     { spell.ExplosiveShot, },
-    { spell.ArcaneShot, { "player.buff("..spell.ThrilloftheHunt..").count > 2", }, },
+    { spell.BlackArrow, },
+    { spell.ArcaneShot, },
     { spell.ExplosiveShot, { "player.buff("..spell.LockandLoad..")", }, },
     { spell.Berserking, { "modifier.cooldowns", }, },
     { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
 }
+
+
+
+
+
+local opener2 = {
+    { spell.ArcaneShot, { "!target.debuff("..spell.SerpentSting..")" }, },
+    { spell.Trinket1, { "modifier.cooldowns", }, },
+    { spell.Trinket2, { "modifier.cooldowns", }, },
+    { spell.BloodFury, { "modifier.cooldowns", }, },
+    { spell.Barrage, },
+    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.AutoExplosiveTrap(10)", }, "toggle.autotarget", },
+    { spell.AMurderofCrows, { "modifier.cooldowns", }, },
+    { spell.BlackArrow, },
+}
+
+
+
+
+
+local opener3plus = {
+    { spell.MultiShot, { "!target.debuff("..spell.SerpentSting..")" }, },
+    { spell.Trinket1, { "modifier.cooldowns", }, },
+    { spell.Trinket2, { "modifier.cooldowns", }, },
+    { spell.BloodFury, { "modifier.cooldowns", }, },
+    { spell.Barrage, },
+    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.AutoExplosiveTrap(10)", }, "toggle.autotarget", },
+    { spell.AMurderofCrows, { "modifier.cooldowns", }, },
+}
+
+
+
+
+
 local azor_singletarget = {
     { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
     { spell.BloodFury, { "modifier.cooldowns", }, },
@@ -234,6 +325,11 @@ local azor_singletarget = {
     { spell.FocusingShot, { "player.focus < 50", }, },
     { spell.CobraShot, { "player.focus < 86", "!talent(7,2)", }, },
 }
+
+
+
+
+
 local azor_multitarget = {
     { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
     { spell.BloodFury, { "modifier.cooldowns", }, },
@@ -256,6 +352,11 @@ local azor_multitarget = {
     { spell.FocusingShot, { "player.focus < 50", }, },
     { spell.CobraShot, { "player.focus < 86", }, },
 }
+
+
+
+
+
 local noxxic = {
     -- THIS IS SHIT!!! DO NOT USE :)~
     { spell.ArcaneTorrent, { "modifier.cooldowns", }, },
@@ -273,6 +374,11 @@ local noxxic = {
     { spell.FocusingShot, { "player.focus < 50", }, },
     { spell.CobraShot, { "player.focus < 70", }, },
 }
+
+
+
+
+
 local simc = {
     { spell.ArcaneShot, { "!target.debuff("..spell.SerpentSting..")" }, },
     --actions=auto_shot
@@ -387,6 +493,8 @@ ProbablyEngine.rotation.register_custom(255, "Rotation Agent - Survival",
     { string.PauseIncPet, { "lastcast("..spell.FeignDeath..")", }, },
     { string.PauseIncPet, { "player.buff("..spell.Food..")", }, },
 
+    { opener3plus, { "@LibHunter.UseOpenerCheck('normal', 4)", "modifier.multitarget", "target.area(10).enemies >= 3", }, },
+    { opener2, { "@LibHunter.UseOpenerCheck('normal', 4)", "modifier.multitarget", "target.area(10).enemies >= 2", }, },
     { opener, { "@LibHunter.UseOpenerCheck('normal', 4)", }, },
 
     { poolfocus, },
