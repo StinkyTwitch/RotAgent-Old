@@ -334,9 +334,15 @@ function LibHunter.AutoExplosiveTrap(radius)
     local cluster_target = nil
     local largest_cluster = 0
     local units_in_cluster = 0
+    local explosive_trap1 = "13813"
+    local explosive_trap2 = "82939"
 
-    --local actual_combat_time = (GetTime() - ProbablyEngine.module.player.combatTime)
+    local et1start, et1duration, et1enabled = GetSpellCooldown(explosive_trap1)
+    local et2start, et2duration, et2enabled = GetSpellCooldown(explosive_trap2)
 
+    if et1duration ~= 0 or et2duration ~= 0 then
+        return false
+    end
     if ProbablyEngine.module.player.casting == true then
         return false
     end
@@ -352,7 +358,7 @@ function LibHunter.AutoExplosiveTrap(radius)
             for j=1, #CACHEUNITSTABLE do
                 local cluster_distance = GetDistance(CACHEUNITSTABLE[i].key, CACHEUNITSTABLE[j].key)
 
-                if cluster_distance <= 8 and not cluster_distance == 0 then
+                if cluster_distance <= 8 and CACHEUNITSTABLE[j].key ~= CACHEUNITSTABLE[i].key then
                     units_in_cluster = units_in_cluster + 1
                 end
             end
@@ -365,6 +371,9 @@ function LibHunter.AutoExplosiveTrap(radius)
     --if cluster_target ~= nil and actual_combat_time > 4 then
     if cluster_target ~= nil then
         CastGround("Explosive Trap", CACHEUNITSTABLE[cluster_target].key)
+        if LIBDRAWPARSEDTARGET == nil then
+            LIBDRAWPARSEDTARGET = CACHEUNITSTABLE[cluster_target].key
+        end
         return true
     end
     return false
