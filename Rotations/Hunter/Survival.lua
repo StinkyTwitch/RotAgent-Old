@@ -205,11 +205,9 @@ local opener = {
     { spell.Trinket1, { "modifier.cooldowns", }, },
     { spell.Trinket2, { "modifier.cooldowns", }, },
     { spell.BloodFury, { "modifier.cooldowns", }, },
-    { spell.Barrage, { "target.area(10).enemies > 1", }, },
-    { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.AutoExplosiveTrap(10)", "target.area(10).enemies > 1", }, "toggle.autotarget", },
     { spell.AMurderofCrows, { "modifier.cooldowns", }, },
-    { spell.BlackArrow, },
     { spell.ExplosiveShot, },
+    { spell.BlackArrow, },
     { spell.ArcaneShot, { "player.buff("..spell.ThrilloftheHunt..").count > 2", }, },
     { spell.ExplosiveShot, { "player.buff("..spell.LockandLoad..")", }, },
     { spell.Berserking, { "modifier.cooldowns", }, },
@@ -274,7 +272,6 @@ local noxxic = {
     { spell.CobraShot, { "player.focus < 70", }, },
 }
 local simc = {
-    { spell.ArcaneShot, { "!target.debuff("..spell.SerpentSting..")" }, },
     --actions=auto_shot
     --actions+=/use_items
     { spell.Trinket1, { "modifier.cooldowns", }, },
@@ -295,7 +292,6 @@ local simc = {
     { spell.AgilityPotion, { "toggle.consumables", "target.deathin <= 25", }, },
     --actions+=/call_action_list,name=aoe,if=active_enemies>1
     {{
-        { spell.MultiShot, { "!target.debuff("..spell.SerpentSting..")" }, },
         --actions.aoe=stampede,if=buff.potion.up|
         --            (cooldown.potion.remains&(buff.archmages_greater_incandescence_agi.up|
         --            trinket.stat.any.up|
@@ -313,7 +309,7 @@ local simc = {
         --actions.aoe+=/explosive_shot,if=active_enemies<5
         { spell.ExplosiveShot, { "target.area(10).enemies < 5", }, },
         --actions.aoe+=/explosive_trap,if=dot.explosive_trap.remains<=5
-        { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", "player.spell("..spell.ExplosiveTrap1..").cooldown = 0", }, },
+        { spell.ExplosiveTrap1, { "!player.buff("..spell.TrapLauncher..")", }, },
         { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", }, "!toggle.autotarget", "target.ground", },
         { spell.ExplosiveTrap2, { "player.buff("..spell.TrapLauncher..")", "@LibHunter.AutoExplosiveTrap(10)", }, "toggle.autotarget", },
         --actions.aoe+=/a_murder_of_crows

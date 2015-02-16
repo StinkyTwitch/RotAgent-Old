@@ -1,67 +1,44 @@
 local LibDraw = LibStub("LibDraw-1.0")
 
+-- Any time you want to change the color or width of the lines being drawn, you have access to these functions.
+--LibDraw.SetColor(255, 0, 0, 255) -- Sets the RGB color in values of 0-255
+--LibDraw.SetColorRaw(1, 1, 1, 1) -- Sets the RGB color in values of 0-1
+--LibDraw.SetWidth(1) -- Sets the width of the line in pixels
+
+-- If you need help with X, Y and Z coordinates or are confused about which direction is which.
+-- You can set the helper value to true and it will draw a origin that should help a lot.
+
+
+
 --[[------------------------------------------------------------------------------------------------
-LIBDRAW SYNC
+LIB DRAW
 
 --------------------------------------------------------------------------------------------------]]
 LibDraw.Sync(function()
     if FireHack then
         for index=1, #CACHEUNITSTABLE do
-            local _, serpent_stung = pcall(UnitDebuff, CACHEUNITSTABLE[index].key, "Serpent Sting")
-            local _, unit_exists = pcall(UnitExists, CACHEUNITSTABLE[index].key)
-
-            if not serpent_stung and unit_exists then
+            local serpent_stung = UnitDebuff(CACHEUNITSTABLE[index].key, "Serpent Sting")
+            if not serpent_stung then
+                LibDraw.helper = true
                 LibDraw.SetColor(255, 0, 0, 255)
                 LibDraw.SetWidth(1)
-
                 local targetX, targetY, targetZ = ObjectPosition(CACHEUNITSTABLE[index].key)
-                local _, combat_reach = pcall(UnitCombatReach,CACHEUNITSTABLE[index].key)
-
-                LibDraw.Circle(targetX, targetY, targetZ, combat_reach)
+                LibDraw.Circle(targetX, targetY, targetZ, 2)
             end
         end
-
-        if LIBDRAWPARSEDTARGET ~= nil then
-            LibDraw.SetColor(0, 255, 0, 255)
-            LibDraw.SetWidth(1)
-            local _, unit_exists = pcall(UnitExists, LIBDRAWPARSEDTARGET)
-            local playerX, playerY, playerZ = ObjectPosition("player")
-            local _, targetX, targetY, targetZ = pcall(ObjectPosition, LIBDRAWPARSEDTARGET)
-            local _, combat_reach = pcall(UnitCombatReach, LIBDRAWPARSEDTARGET)
-
-            if unit_exists then
-                LibDraw.Circle(targetX, targetY, targetZ, combat_reach)
-                LibDraw.Line(playerX, playerY, playerZ, targetX, targetY, targetZ)
-                C_Timer.After(1, function() LIBDRAWPARSEDTARGET = nil end)
-            end
-        end
-        --[[
-        if UnitExists("target") then
-            LibDraw.SetColor(255, 0, 0, 255)
-            LibDraw.SetWidth(1)
-
-            local binding_shot = "109248"
-            local binding_shot_reach = 5
-            local barrage = "120360"
-            local barrage_reach = 40
-            local bsstart, bsduration, bsenabled = GetSpellCooldown(binding_shot)
-            local barstart, barduration, barenabled = GetSpellCooldown(barrage)
-            local combat_reach = UnitCombatReach("target")
-            local playerX, playerY, playerZ = ObjectPosition("player")
-            local targetX, targetY, targetZ = ObjectPosition("target")
-            local reaction = UnitReaction("player", "target")
-            local rotation = ObjectFacing("player")
-
-            --LibDraw.Circle(targetX, targetY, targetZ, combat_reach)
-
-            --if bsduration == 0 and reaction and reaction <= 4 then
-            --    LibDraw.Circle(targetX, targetY, targetZ, binding_shot_reach)
-            --end
-
-            --if barduration == 0 and reaction and reaction <= 4 then
-            --    LibDraw.Arc(playerX, playerY, playerZ, barrage_reach, 180, rotation)
-            --end
-        end
-        ]]
     end
+    --[[
+    if FireHack and UnitExists("target") then
+
+        LibDraw.SetColor(255, 0, 0, 255)
+        LibDraw.SetWidth(1)
+
+        local playerX, playerY, playerZ = ObjectPosition("player")
+        local targetX, targetY, targetZ = ObjectPosition("target")
+
+        LibDraw.Line(playerX, playerY, playerZ, targetX, targetY, targetZ)
+
+        LibDraw.Circle(targetX, targetY, targetZ, 5)
+    end
+    ]]
 end)
