@@ -10,6 +10,7 @@ Externals\LibDraw.lua
 
 
 Libs\Draw.lua
+Libs\Firehack.lua
 Libs\Globals.lua
 Libs\LibHunter.lua
 

@@ -289,6 +289,8 @@ function SlashCmdList.RAHUNTERCMD(msg, editbox)
         LibHunter.SummonPet()
     elseif command == "basestats" then
         BaseStatsPrint()
+    elseif command == "cacheunits" then
+        CacheUnitsShow()
     else
         LibHunter.QueueSpell = nil
     end
@@ -368,7 +370,7 @@ function LibHunter.AutoExplosiveTrap(radius)
             end
         end
     end
-    --if cluster_target ~= nil and actual_combat_time > 4 then
+
     if cluster_target ~= nil then
         CastGround("Explosive Trap", CACHEUNITSTABLE[cluster_target].key)
         if LIBDRAWPARSEDTARGET == nil then
