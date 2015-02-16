@@ -48,6 +48,7 @@ function ProbablyEngine.protected.FireHack()
 			-- WOD DUNGEONS/RAIDS
 			[75966] = "75966",		-- Defiled Spirit (Shadowmoon Burial Grounds)
 			[76220] = "76220",		-- Blazing Trickster (Auchindoun Normal)
+			[76222] = "76222",	-- Rallying Banner (UBRS Black Iron Grunt)							-- VERIFIED
 			[76267] = "76267",		-- Solar Zealot (Skyreach)
 			[76518] = "76518",		-- Ritual of Bones (Shadowmoon Burial Grounds)
 			[77252] = "77252",		-- Ore Crate (BRF Oregorger)
@@ -56,7 +57,6 @@ function ProbablyEngine.protected.FireHack()
 			[79511] = "79511",		-- Blazing Trickster (Auchindoun Heroic)						-- VERIFIED
 			[81638] = "81638",		-- Aqueous Globule (The Everbloom)
 			[86644] = "86644",		-- Ore Crate (BRF Oregorger)
-			[153792] = "153792",	-- Rallying Banner (UBRS Black Iron Grunt)
 		}
 
 		-- THANK YOU TO MIRAKURU!
